@@ -1,6 +1,8 @@
 import api from './api'
 
-export const BACKEND_ORIGIN = 'http://localhost:8000'
+// Empty in production → storageUrl returns same-origin /storage/... paths,
+// served by FastAPI behind the same domain.
+export const BACKEND_ORIGIN = import.meta.env.VITE_BACKEND_ORIGIN ?? ''
 
 export const storageUrl = (path) => {
   if (!path) return null

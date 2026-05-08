@@ -1,0 +1,31 @@
+# Keep the build context tiny and avoid leaking dev-only files into the image.
+.git
+.gitignore
+.dockerignore
+README*.md
+*.log
+logs/
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Backend
+backend/venv/
+backend/.venv/
+backend/__pycache__/
+backend/**/__pycache__/
+backend/*.pyc
+backend/society.db
+backend/.env
+backend/.env.*
+
+# Frontend (we build it inside the image, so dev artifacts aren't needed)
+frontend/node_modules/
+frontend/dist/
+
+# Project storage from local dev
+storage/
+backup/

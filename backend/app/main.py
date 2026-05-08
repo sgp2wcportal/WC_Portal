@@ -1,7 +1,8 @@
 import os
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
 from sqlalchemy import inspect, text
@@ -149,17 +150,35 @@ for sub in ("qrcodes", "menu_images", "receipts", "payment_qrs"):
     os.makedirs(os.path.join(storage_root, sub), exist_ok=True)
 app.mount("/storage", StaticFiles(directory=storage_root), name="storage")
 
-# Health check endpoint
-@app.get("/")
-async def root():
-    return {
-        "message": "Siddha Galaxia Phase 2 Welfare Committee Portal 2026-27",
-        "status": "running"
-    }
-
 @app.get("/api/health")
 async def health():
     return {"status": "ok"}
+
+
+# Serve the built frontend (Vite dist) when present. In dev this directory
+# usually doesn't exist (Vite serves the SPA itself on :3000); in the Docker
+# image it's at /app/frontend/dist.
+_frontend_dir = os.environ.get("FRONTEND_DIR") or os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "..", "..", "frontend", "dist")
+)
+if os.path.isdir(_frontend_dir):
+    _assets_dir = os.path.join(_frontend_dir, "assets")
+    if os.path.isdir(_assets_dir):
+        app.mount("/assets", StaticFiles(directory=_assets_dir), name="frontend-assets")
+
+    @app.get("/{full_path:path}", include_in_schema=False)
+    async def serve_spa(full_path: str):
+        # /api/* and /storage/* are handled by routers/mounts above; if we get
+        # here it's a real 404 for those prefixes.
+        if full_path.startswith("api/") or full_path.startswith("storage/") or full_path.startswith("assets/"):
+            raise HTTPException(status_code=404)
+        # Try a literal file (favicon.ico, robots.txt, etc.)
+        candidate = os.path.join(_frontend_dir, full_path)
+        if full_path and os.path.isfile(candidate):
+            return FileResponse(candidate)
+        # SPA fallback — let React Router handle the route on the client.
+        return FileResponse(os.path.join(_frontend_dir, "index.html"))
+
 
 if __name__ == "__main__":
     import uvicorn
