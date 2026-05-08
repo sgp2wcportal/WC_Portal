@@ -1,0 +1,287 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-cream text-ink-800;
+    background-image:
+      radial-gradient(at 0% 0%, rgba(245, 158, 11, 0.08) 0px, transparent 35%),
+      radial-gradient(at 100% 100%, rgba(79, 70, 229, 0.05) 0px, transparent 40%),
+      radial-gradient(at 50% 50%, rgba(5, 150, 105, 0.03) 0px, transparent 50%);
+    background-attachment: fixed;
+    min-height: 100vh;
+  }
+
+  ::selection {
+    @apply bg-saffron-200 text-saffron-900;
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-display tracking-tight;
+  }
+
+  /* Pretty scrollbar */
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-ink-200 rounded-full;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-saffron-300;
+  }
+}
+
+@layer components {
+  /* ---------- Buttons ---------- */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm
+           transition-all duration-200 active:scale-[.97] focus:outline-none focus-visible:ring-2
+           focus-visible:ring-offset-2 focus-visible:ring-saffron-500 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-primary {
+    @apply text-white bg-saffron-grad shadow-glow hover:brightness-110 hover:shadow-[0_14px_50px_-12px_rgba(245,158,11,.6)];
+  }
+
+  .btn-secondary {
+    @apply bg-white text-ink-800 border border-ink-200 hover:bg-ink-50 hover:border-ink-200 shadow-sm;
+  }
+
+  .btn-emerald {
+    @apply text-white bg-emerald-grad shadow-glowEmerald hover:brightness-110;
+  }
+
+  .btn-indigo {
+    @apply text-white bg-indigo-grad shadow-glowIndigo hover:brightness-110;
+  }
+
+  .btn-danger {
+    @apply text-white bg-rose-600 hover:bg-rose-700 shadow-md;
+  }
+
+  .btn-ghost {
+    @apply px-3 py-1.5 rounded-lg text-sm font-medium text-ink-600 hover:text-ink-900 hover:bg-ink-100
+           transition-colors active:scale-[.97];
+  }
+
+  /* ---------- Inputs ---------- */
+  .input-field {
+    @apply w-full px-4 py-2.5 bg-white border border-ink-200 rounded-xl text-ink-900 placeholder:text-ink-400
+           focus:outline-none focus:border-saffron-500 focus:ring-4 focus:ring-saffron-500/15
+           transition-all duration-200 disabled:bg-ink-50 disabled:cursor-not-allowed;
+  }
+
+  /* ---------- Cards ---------- */
+  .card {
+    @apply bg-white/90 backdrop-blur-sm rounded-2xl border border-ink-100 p-6 shadow-soft;
+  }
+
+  .card-elevated {
+    @apply bg-white rounded-2xl shadow-soft border border-ink-100 p-6
+           hover:shadow-[0_20px_60px_-25px_rgba(28,25,23,0.18)] transition-shadow duration-300;
+  }
+
+  .card-glass {
+    @apply bg-white/70 backdrop-blur-md rounded-2xl border border-white/60 p-6 shadow-soft;
+  }
+
+  .card-hero {
+    @apply relative overflow-hidden rounded-3xl border border-ink-100 bg-festive-hero bg-white p-8 shadow-soft;
+  }
+
+  /* Tile (dashboard quick-actions) */
+  .tile {
+    @apply relative overflow-hidden bg-white rounded-2xl border border-ink-100 p-6 cursor-pointer shadow-soft
+           hover:shadow-[0_24px_60px_-25px_rgba(245,158,11,.45)] hover:-translate-y-1
+           transition-all duration-300 flex flex-col items-start gap-3;
+  }
+
+  .tile::after {
+    content: '';
+    @apply absolute -right-10 -bottom-10 w-32 h-32 rounded-full bg-saffron-100 opacity-0 transition-opacity duration-300 pointer-events-none;
+  }
+
+  .tile:hover::after {
+    @apply opacity-60;
+  }
+
+  /* ---------- Tabs ---------- */
+  .tab-btn {
+    @apply px-4 py-2 rounded-xl font-medium text-sm border border-transparent text-ink-600
+           hover:text-ink-900 hover:bg-white/70 transition-all;
+  }
+
+  .tab-btn-active {
+    @apply bg-white text-ink-900 border-ink-100 shadow-sm;
+  }
+
+  /* ---------- Badges ---------- */
+  .badge {
+    @apply inline-flex items-center gap-1 px-2.5 py-0.5 text-xs font-semibold rounded-full ring-1 ring-inset;
+  }
+
+  .badge-green { @apply bg-emerald-50 text-emerald-700 ring-emerald-200; }
+  .badge-amber { @apply bg-saffron-50 text-saffron-700 ring-saffron-200; }
+  .badge-red   { @apply bg-rose-50 text-rose-700 ring-rose-200; }
+  .badge-blue  { @apply bg-indigo-50 text-indigo-700 ring-indigo-200; }
+
+  /* ---------- Misc ---------- */
+  .section-title {
+    @apply text-2xl md:text-3xl font-display font-semibold text-ink-900 tracking-tight;
+  }
+
+  .display-title {
+    @apply font-display font-semibold tracking-tight text-ink-900;
+  }
+
+  .muted {
+    @apply text-sm text-ink-600;
+  }
+
+  .gradient-text {
+    @apply bg-clip-text text-transparent bg-saffron-grad;
+  }
+
+  .ring-festive {
+    box-shadow:
+      0 0 0 1px rgba(245, 158, 11, .25),
+      0 0 0 6px rgba(245, 158, 11, .08);
+  }
+
+  /* ---------- Marquee ---------- */
+  .marquee-track {
+    @apply flex gap-12 whitespace-nowrap will-change-transform animate-marquee;
+    width: max-content;
+  }
+
+  /* ---------- Decorative motif (mandala dot ring) ---------- */
+  .motif-dots {
+    background-image: radial-gradient(circle, rgba(245, 158, 11, 0.5) 1.2px, transparent 1.5px);
+    background-size: 14px 14px;
+  }
+
+  /* ---------- Skeleton shimmer ---------- */
+  .skeleton {
+    @apply rounded-lg bg-gradient-to-r from-ink-100 via-ink-200 to-ink-100 bg-[length:200%_100%] animate-shimmer;
+  }
+
+  /* ---------- Sidebar nav item ---------- */
+  .nav-item {
+    @apply flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-ink-600
+           hover:bg-saffron-50 hover:text-saffron-700 transition-all duration-200 cursor-pointer;
+  }
+
+  .nav-item-active {
+    @apply bg-saffron-grad text-white shadow-glow font-semibold;
+  }
+
+  /* ---------- Modal scrim ---------- */
+  .modal-scrim {
+    @apply fixed inset-0 bg-ink-900/40 backdrop-blur-sm z-40;
+  }
+
+  /* ---------- Rich-text content ---------- */
+  .prose-content {
+    @apply text-ink-800 leading-relaxed;
+  }
+  .prose-content h1 { @apply text-2xl font-display font-semibold text-ink-900 mt-2 mb-1; }
+  .prose-content h2 { @apply text-xl  font-display font-semibold text-ink-900 mt-2 mb-1; }
+  .prose-content h3 { @apply text-lg  font-display font-semibold text-ink-900 mt-2 mb-1; }
+  .prose-content p { @apply my-1; }
+  .prose-content strong { @apply font-bold; }
+  .prose-content em { @apply italic; }
+  .prose-content u { text-decoration: underline; }
+  .prose-content s { text-decoration: line-through; }
+  .prose-content ul { @apply list-disc pl-6 my-1; }
+  .prose-content ol { @apply list-decimal pl-6 my-1; }
+  .prose-content blockquote { @apply pl-3 border-l-4 border-saffron-300 text-ink-600 italic my-1; }
+  .prose-content a { @apply text-saffron-700 underline; }
+  .prose-content[data-placeholder]:empty::before,
+  .prose-content > p.is-editor-empty:first-child::before {
+    content: attr(data-placeholder);
+    @apply text-ink-400 pointer-events-none float-left h-0;
+  }
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+  .text-balance { text-wrap: balance; }
+}
+
+/* ============================================================================
+ * Mobile compatible view — opt-in via the slide-bar in the header.
+ * The toggle sets <html data-view="mobile"> and these rules force a phone-like
+ * layout regardless of the actual viewport width. Real phone visits get the
+ * same look automatically through Tailwind's md/lg breakpoints.
+ * ===========================================================================*/
+
+html[data-view="mobile"] aside { display: none !important; }
+
+html[data-view="mobile"] .mobile-nav-trigger { display: inline-flex !important; }
+
+html[data-view="mobile"] .max-w-7xl,
+html[data-view="mobile"] .max-w-6xl,
+html[data-view="mobile"] .max-w-5xl,
+html[data-view="mobile"] .max-w-4xl,
+html[data-view="mobile"] .max-w-3xl,
+html[data-view="mobile"] .max-w-2xl {
+  max-width: 480px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* Squash everything to a single column */
+html[data-view="mobile"] .md\:grid-cols-2,
+html[data-view="mobile"] .md\:grid-cols-3,
+html[data-view="mobile"] .md\:grid-cols-5,
+html[data-view="mobile"] .md\:grid-cols-6,
+html[data-view="mobile"] .md\:grid-cols-7,
+html[data-view="mobile"] .lg\:grid-cols-2,
+html[data-view="mobile"] .lg\:grid-cols-3,
+html[data-view="mobile"] .lg\:grid-cols-\[1fr_360px\],
+html[data-view="mobile"] .lg\:grid-cols-\[1\.6fr_1fr\] {
+  grid-template-columns: minmax(0, 1fr) !important;
+}
+
+/* Stat strips stay 2-up so they don't take a whole screen */
+html[data-view="mobile"] .md\:grid-cols-4 {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+
+/* Reduce hero/page padding so a phone's full width is usable */
+html[data-view="mobile"] .md\:p-10 { padding: 1rem !important; }
+html[data-view="mobile"] .p-10    { padding: 1rem !important; }
+html[data-view="mobile"] .p-8     { padding: 1rem !important; }
+
+/* Header brand text: keep logo + initial visible, hide secondary lines */
+html[data-view="mobile"] header .sm\:inline,
+html[data-view="mobile"] header .sm\:block {
+  display: none !important;
+}
+
+/* Stack flex-row hero buttons full-width */
+html[data-view="mobile"] .card-hero .flex-wrap > .btn {
+  width: 100%;
+  justify-content: center;
+}
+
+/* Reduce display headline scale */
+html[data-view="mobile"] .md\:text-5xl { font-size: 2rem !important; line-height: 2.25rem !important; }
+html[data-view="mobile"] .text-5xl    { font-size: 2rem !important; line-height: 2.25rem !important; }
+html[data-view="mobile"] .md\:text-3xl { font-size: 1.5rem !important; line-height: 1.875rem !important; }
+
+/* Tabs row in coupons / similar — wrap nicely */
+html[data-view="mobile"] .flex-wrap.gap-1 button { font-size: 12px; padding-left: 0.6rem; padding-right: 0.6rem; }
+
+/* Coupon UPI panel + booking form share a 1fr_360px grid — already collapsed
+   above. Make sure the sticky panel stops sticking on mobile. */
+html[data-view="mobile"] .lg\:sticky { position: static !important; }
