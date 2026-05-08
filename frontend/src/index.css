@@ -224,7 +224,7 @@
  * same look automatically through Tailwind's md/lg breakpoints.
  * ===========================================================================*/
 
-html[data-view="mobile"] aside { display: none !important; }
+html[data-view="mobile"] aside.app-sidebar { display: none !important; }
 
 html[data-view="mobile"] .mobile-nav-trigger { display: inline-flex !important; }
 

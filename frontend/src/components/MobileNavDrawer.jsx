@@ -9,6 +9,7 @@ import {
   Receipt,
   UtensilsCrossed,
   PieChart,
+  CalendarRange,
   X,
   Sparkles,
 } from 'lucide-react'
@@ -16,13 +17,14 @@ import {
 import { useAuthStore } from '../store/authStore'
 
 const menuItems = [
-  { path: '/dashboard',     label: 'Dashboard',     icon: LayoutDashboard, roles: ['admin', 'user', 'generic'] },
-  { path: '/announcements', label: 'Announcements', icon: Megaphone,       roles: ['admin', 'user', 'generic'] },
-  { path: '/subscriptions', label: 'Subscriptions', icon: CreditCard,      roles: ['admin', 'user', 'generic'] },
-  { path: '/donations',     label: 'Donations',     icon: HeartHandshake,  roles: ['admin', 'user', 'generic'] },
-  { path: '/expenses',      label: 'Expenses',      icon: Receipt,         roles: ['admin', 'generic']         },
-  { path: '/coupons',       label: 'Food Coupons',  icon: UtensilsCrossed, roles: ['admin', 'user', 'generic'] },
-  { path: '/treasury',      label: 'Treasury',      icon: PieChart,        roles: ['admin', 'generic']         },
+  { path: '/dashboard',     label: 'Dashboard',       icon: LayoutDashboard, roles: ['admin', 'user', 'generic'] },
+  { path: '/announcements', label: 'Announcements',   icon: Megaphone,       roles: ['admin', 'user', 'generic'] },
+  { path: '/events',        label: 'Events Calendar', icon: CalendarRange,   roles: ['admin', 'user', 'generic'] },
+  { path: '/subscriptions', label: 'Subscriptions',   icon: CreditCard,      roles: ['admin', 'user', 'generic'] },
+  { path: '/donations',     label: 'Donations',       icon: HeartHandshake,  roles: ['admin', 'user', 'generic'] },
+  { path: '/expenses',      label: 'Expenses',        icon: Receipt,         roles: ['admin', 'generic']         },
+  { path: '/coupons',       label: 'Food Coupons',    icon: UtensilsCrossed, roles: ['admin', 'user', 'generic'] },
+  { path: '/treasury',      label: 'Treasury',        icon: PieChart,        roles: ['admin', 'generic']         },
 ]
 
 export const MobileNavDrawer = ({ open, onClose }) => {

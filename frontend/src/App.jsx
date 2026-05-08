@@ -18,6 +18,7 @@ import { SubscriptionsPage } from './pages/SubscriptionsPage'
 import { DonationsPage } from './pages/DonationsPage'
 import { ExpensesPage } from './pages/ExpensesPage'
 import { CouponsPage } from './pages/CouponsPage'
+import { EventsPage } from './pages/EventsPage'
 import { TreasuryPage } from './pages/TreasuryPage'
 
 const PageTransition = ({ children }) => (
@@ -65,6 +66,10 @@ const AnimatedRoutes = () => {
         <Route
           path="/coupons"
           element={<PrivateRoute><PageTransition><CouponsPage /></PageTransition></PrivateRoute>}
+        />
+        <Route
+          path="/events"
+          element={<PrivateRoute><PageTransition><EventsPage /></PageTransition></PrivateRoute>}
         />
         <Route
           path="/treasury"

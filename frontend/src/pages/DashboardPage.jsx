@@ -10,6 +10,7 @@ import {
   PieChart,
   ArrowUpRight,
   Sparkles,
+  CalendarRange,
 } from 'lucide-react'
 
 import { useAuthStore } from '../store/authStore'
@@ -22,6 +23,15 @@ const tiles = [
     description: 'Latest Updates from Siddha Galaxia Phase II — Welfare Committee',
     icon: Megaphone,
     accent: 'from-saffron-400 to-saffron-600',
+    glow: 'shadow-glow',
+    roles: ['admin', 'user', 'generic'],
+  },
+  {
+    path: '/events',
+    title: 'Events Calendar',
+    description: 'Pujas, get-togethers & community events month by month',
+    icon: CalendarRange,
+    accent: 'from-orange-400 to-rose-500',
     glow: 'shadow-glow',
     roles: ['admin', 'user', 'generic'],
   },
@@ -147,36 +157,27 @@ export const DashboardPage = () => {
         <div className="absolute -right-24 -top-24 w-72 h-72 rounded-full bg-saffron-200/50 blur-3xl pointer-events-none" />
         <div className="absolute right-10 bottom-4 w-40 h-40 motif-dots rounded-full opacity-40 animate-spin-slow pointer-events-none" />
 
-        <div className="relative grid md:grid-cols-[1.6fr_1fr] gap-8 items-center">
-          <div>
-            <p className="text-saffron-700 font-semibold text-xs uppercase tracking-[0.2em] mb-2 inline-flex items-center gap-2">
-              <Sparkles className="w-3.5 h-3.5" /> {today}
-            </p>
-            <h1 className="font-display text-4xl md:text-5xl font-semibold text-ink-900 leading-[1.1] tracking-tight text-balance">
-              {greeting()},{' '}
-              <span className="gradient-text italic">{greetingTarget}</span>
-              .
-            </h1>
-            <p className="mt-4 text-lg text-ink-600 max-w-xl text-balance">
-              Here's everything happening at Siddha Galaxia Phase 2 today.
-              Pick a section below to get started.
-            </p>
+        <div className="relative">
+          <p className="text-saffron-700 font-semibold text-xs uppercase tracking-[0.2em] mb-2 inline-flex items-center gap-2">
+            <Sparkles className="w-3.5 h-3.5" /> {today}
+          </p>
+          <h1 className="font-display text-4xl md:text-5xl font-semibold text-ink-900 leading-[1.1] tracking-tight text-balance">
+            {greeting()},{' '}
+            <span className="gradient-text italic">{greetingTarget}</span>
+            .
+          </h1>
+          <p className="mt-4 text-lg text-ink-600 max-w-xl text-balance">
+            Here's everything happening at Siddha Galaxia Phase 2 today.
+            Pick a section below to get started.
+          </p>
 
-            <div className="flex flex-wrap gap-2 mt-6">
-              <Link to="/announcements" className="btn btn-primary">
-                <Megaphone className="w-4 h-4" /> See announcements
-              </Link>
-              <Link to="/coupons" className="btn btn-secondary">
-                <UtensilsCrossed className="w-4 h-4" /> Book food coupons
-              </Link>
-            </div>
-          </div>
-
-          {/* Stat strip */}
-          <div className="grid grid-cols-3 gap-3">
-            <HeroStat label="Active sections" value={filteredTiles.length} accent="bg-saffron-grad" />
-            <HeroStat label="Your role" value={role || '—'} accent="bg-indigo-grad" />
-            <HeroStat label="Year" value="26-27" accent="bg-emerald-grad" />
+          <div className="flex flex-wrap gap-2 mt-6">
+            <Link to="/announcements" className="btn btn-primary">
+              <Megaphone className="w-4 h-4" /> See announcements
+            </Link>
+            <Link to="/events" className="btn btn-secondary">
+              <CalendarRange className="w-4 h-4" /> View Events Calendar
+            </Link>
           </div>
         </div>
       </motion.section>
@@ -195,10 +196,3 @@ export const DashboardPage = () => {
   )
 }
 
-const HeroStat = ({ label, value, accent }) => (
-  <div className="rounded-2xl bg-white border border-ink-100 p-3 shadow-soft relative overflow-hidden">
-    <div className={`absolute inset-x-0 top-0 h-1 ${accent}`} />
-    <p className="text-[10px] uppercase tracking-[0.16em] text-ink-400 font-semibold mt-1">{label}</p>
-    <p className="font-display text-xl font-semibold text-ink-900 capitalize mt-0.5">{value}</p>
-  </div>
-)

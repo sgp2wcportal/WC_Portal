@@ -9,7 +9,7 @@ from sqlalchemy import inspect, text
 
 from app.config import settings
 from app.database import Base, engine
-from app.routes import announcements, auth, coupons, donations, expenses, payments, reports, subscriptions, users
+from app.routes import announcements, auth, coupons, donations, events, expenses, payments, reports, subscriptions, users
 
 # Create tables
 Base.metadata.create_all(bind=engine)
@@ -141,12 +141,13 @@ app.include_router(donations.router)
 app.include_router(subscriptions.router)
 app.include_router(announcements.router)
 app.include_router(coupons.router)
+app.include_router(events.router)
 app.include_router(payments.router)
 app.include_router(reports.router)
 
 # Serve uploaded files (QR codes, menu images, receipts) from /storage/<...>
 storage_root = os.path.abspath(settings.UPLOAD_FOLDER)
-for sub in ("qrcodes", "menu_images", "receipts", "payment_qrs"):
+for sub in ("qrcodes", "menu_images", "receipts", "payment_qrs", "event_images"):
     os.makedirs(os.path.join(storage_root, sub), exist_ok=True)
 app.mount("/storage", StaticFiles(directory=storage_root), name="storage")
 

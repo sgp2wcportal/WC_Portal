@@ -8,19 +8,32 @@ primary_region = "bom"
 [build]
   dockerfile = "Dockerfile"
 
-# Non-secret env vars (anything sensitive goes in `fly secrets set ...`)
+# Env vars baked into the deploy. SECRET_KEY is the one thing still set via
+# `fly secrets set` since it's a portal-wide cryptographic key.
+#
+# WARNING: this file is committed to GitHub. Treat the SMTP_PASSWORD below as
+# a public credential — keep the repo PRIVATE. If the repo is ever made public
+# or leaked, immediately revoke the app password at:
+#   https://myaccount.google.com/apppasswords
+# and generate a new one.
 [env]
   DATABASE_URL    = "sqlite:////data/society.db"
   UPLOAD_FOLDER   = "/data/storage"
   BACKUP_FOLDER   = "/data/backup"
   DEBUG           = "False"
   FRONTEND_DIR    = "/app/frontend/dist"
-  COMMITTEE_UPI_ID   = "siddhagalaxia@upi"
-  COMMITTEE_UPI_NAME = "Siddha Galaxia Welfare Committee"
+  COMMITTEE_UPI_ID   = "siddhagalaxiaii@sbi"
+  COMMITTEE_UPI_NAME = "Siddha Galaxia Phase 2 Welfare Committee"
   ALGORITHM                   = "HS256"
   ACCESS_TOKEN_EXPIRE_MINUTES = "10080"  # 7 days for resident sessions
-  SMTP_PORT = "587"
-  SMTP_TLS  = "True"
+
+  # SMTP — Gmail app password
+  SMTP_HOST     = "smtp.gmail.com"
+  SMTP_PORT     = "587"
+  SMTP_TLS      = "True"
+  SMTP_USER     = "siddhagalaxiaphase2.wcportal@gmail.com"
+  SMTP_PASSWORD = "pwxbehbsnbxwcjic"
+  SMTP_FROM     = "Siddha Galaxia Phase II Welfare Committee <siddhagalaxiaphase2.wcportal@gmail.com>"
 
 # Persistent volume — SQLite DB + storage/qrcodes + receipts + emails live here.
 # Survives every deploy/restart. Create once with:

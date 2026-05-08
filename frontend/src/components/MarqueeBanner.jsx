@@ -5,12 +5,6 @@ import { Megaphone, X } from 'lucide-react'
 
 import { announcementService } from '../services/announcementService'
 
-const FALLBACK = [
-  '🎉 Welcome to Siddha Galaxia · Phase 2 — Welfare Committee Portal 2026-27',
-  '🪔 Durga Puja meal coupon bookings open soon — keep your UPI ready',
-  '💡 Spotted a bug? Tell the committee on the announcements page',
-]
-
 const isVisible = (a) => {
   if (!a.visible_until) return true
   const raw = /[zZ]|[+-]\d{2}:?\d{2}$/.test(a.visible_until)
@@ -20,7 +14,7 @@ const isVisible = (a) => {
 }
 
 export const MarqueeBanner = () => {
-  const [items, setItems] = useState(FALLBACK)
+  const [items, setItems] = useState([])
   const [dismissed, setDismissed] = useState(false)
 
   useEffect(() => {
@@ -30,16 +24,15 @@ export const MarqueeBanner = () => {
       .then((r) => {
         if (cancelled) return
         const live = (r.data || []).filter(isVisible).slice(0, 6)
-        if (!live.length) return
         setItems(live.map((a) => `📢 ${a.title} — ${a.content.slice(0, 110)}${a.content.length > 110 ? '…' : ''}`))
       })
       .catch(() => {
-        // keep fallback
+        // leave items empty so the banner hides itself
       })
     return () => { cancelled = true }
   }, [])
 
-  if (dismissed) return null
+  if (dismissed || items.length === 0) return null
 
   // Duplicate so the marquee animation seamlessly loops.
   const looped = [...items, ...items]
