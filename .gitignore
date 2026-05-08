@@ -60,3 +60,12 @@ Thumbs.db
 # Logs
 *.log
 logs/
+
+# Project-specific (explicit so intent is clear in review)
+backend/venv/
+backend/.venv/
+backend/society.db
+backend/storage/
+backend/.env
+frontend/node_modules/
+frontend/dist/

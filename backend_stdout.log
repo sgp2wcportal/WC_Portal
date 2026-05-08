@@ -1,0 +1,381 @@
+2026-05-07 16:50:23,818 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-05-07 16:50:23,821 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("announcements")
+2026-05-07 16:50:23,821 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-05-07 16:50:23,822 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("users")
+2026-05-07 16:50:23,822 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-05-07 16:50:23,822 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("coupon_menus")
+2026-05-07 16:50:23,823 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-05-07 16:50:23,823 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("coupons")
+2026-05-07 16:50:23,823 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-05-07 16:50:23,824 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("coupon_tickets")
+2026-05-07 16:50:23,824 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-05-07 16:50:23,824 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("donations")
+2026-05-07 16:50:23,824 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-05-07 16:50:23,824 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("expenses")
+2026-05-07 16:50:23,825 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-05-07 16:50:23,825 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("subscriptions")
+2026-05-07 16:50:23,825 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-05-07 16:50:23,825 INFO sqlalchemy.engine.Engine COMMIT
+INFO:     127.0.0.1:49740 - "GET /api/health HTTP/1.1" 200 OK
+2026-05-07 16:50:26,156 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-05-07 16:50:26,160 INFO sqlalchemy.engine.Engine SELECT users.id AS users_id, users.username AS users_username, users.password AS users_password, users.role AS users_role, users.created_at AS users_created_at, users.updated_at AS users_updated_at 
+FROM users 
+WHERE users.username = ?
+ LIMIT ? OFFSET ?
+2026-05-07 16:50:26,160 INFO sqlalchemy.engine.Engine [generated in 0.00035s] ('admin', 1, 0)
+INFO:     127.0.0.1:49740 - "POST /api/auth/login HTTP/1.1" 200 OK
+2026-05-07 16:50:26,167 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-05-07 16:50:26,216 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-05-07 16:50:26,219 INFO sqlalchemy.engine.Engine SELECT coupon_menus.id AS coupon_menus_id, coupon_menus.event_name AS coupon_menus_event_name, coupon_menus.event_date AS coupon_menus_event_date, coupon_menus.veg_price AS coupon_menus_veg_price, coupon_menus.nonveg_price AS coupon_menus_nonveg_price, coupon_menus.veg_menu AS coupon_menus_veg_menu, coupon_menus.nonveg_menu AS coupon_menus_nonveg_menu, coupon_menus.veg_image AS coupon_menus_veg_image, coupon_menus.nonveg_image AS coupon_menus_nonveg_image, coupon_menus.is_active AS coupon_menus_is_active, coupon_menus.created_by AS coupon_menus_created_by, coupon_menus.created_at AS coupon_menus_created_at, coupon_menus.updated_at AS coupon_menus_updated_at 
+FROM coupon_menus 
+WHERE coupon_menus.event_name = ?
+ LIMIT ? OFFSET ?
+2026-05-07 16:50:26,220 INFO sqlalchemy.engine.Engine [generated in 0.00042s] ('Durga Puja 2026', 1, 0)
+2026-05-07 16:50:26,222 INFO sqlalchemy.engine.Engine INSERT INTO coupons (id, flat_number, email, event_name, pax, veg_count, nonveg_count, total_amount, qr_code_path, is_verified, created_by, verified_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING created_at
+2026-05-07 16:50:26,222 INFO sqlalchemy.engine.Engine [generated in 0.00044s] ('4f3e0978-ab07-49b7-872e-eb95b9983ce2', 'D-202', 'ghosh041291@gmail.com', 'Durga Puja 2026', 1, 1, 0, 350.0, None, 0, 'admin', None)
+2026-05-07 16:50:26,248 INFO sqlalchemy.engine.Engine INSERT INTO coupon_tickets (id, booking_id, event_name, ticket_type, qr_code_path, is_used, used_at, used_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?) RETURNING created_at
+2026-05-07 16:50:26,248 INFO sqlalchemy.engine.Engine [generated in 0.00076s] ('a003986d-63ed-4b7d-882e-d53592e63c8d', '4f3e0978-ab07-49b7-872e-eb95b9983ce2', 'Durga Puja 2026', 'veg', '..\\storage\\qrcodes\\ticket_a003986d-63ed-4b7d-882e-d53592e63c8d.png', 0, None, None)
+2026-05-07 16:50:26,249 INFO sqlalchemy.engine.Engine COMMIT
+2026-05-07 16:50:26,254 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-05-07 16:50:26,255 INFO sqlalchemy.engine.Engine SELECT coupons.id, coupons.flat_number, coupons.email, coupons.event_name, coupons.pax, coupons.veg_count, coupons.nonveg_count, coupons.total_amount, coupons.qr_code_path, coupons.is_verified, coupons.created_by, coupons.created_at, coupons.verified_at 
+FROM coupons 
+WHERE coupons.id = ?
+2026-05-07 16:50:26,256 INFO sqlalchemy.engine.Engine [generated in 0.00045s] ('4f3e0978-ab07-49b7-872e-eb95b9983ce2',)
+2026-05-07 16:50:26,257 INFO sqlalchemy.engine.Engine SELECT coupon_menus.id AS coupon_menus_id, coupon_menus.event_name AS coupon_menus_event_name, coupon_menus.event_date AS coupon_menus_event_date, coupon_menus.veg_price AS coupon_menus_veg_price, coupon_menus.nonveg_price AS coupon_menus_nonveg_price, coupon_menus.veg_menu AS coupon_menus_veg_menu, coupon_menus.nonveg_menu AS coupon_menus_nonveg_menu, coupon_menus.veg_image AS coupon_menus_veg_image, coupon_menus.nonveg_image AS coupon_menus_nonveg_image, coupon_menus.is_active AS coupon_menus_is_active, coupon_menus.created_by AS coupon_menus_created_by, coupon_menus.created_at AS coupon_menus_created_at, coupon_menus.updated_at AS coupon_menus_updated_at 
+FROM coupon_menus 
+WHERE coupon_menus.event_name = ?
+ LIMIT ? OFFSET ?
+2026-05-07 16:50:26,257 INFO sqlalchemy.engine.Engine [cached since 0.03779s ago] ('Durga Puja 2026', 1, 0)
+2026-05-07 16:50:26,260 INFO sqlalchemy.engine.Engine SELECT coupon_tickets.id AS coupon_tickets_id, coupon_tickets.booking_id AS coupon_tickets_booking_id, coupon_tickets.event_name AS coupon_tickets_event_name, coupon_tickets.ticket_type AS coupon_tickets_ticket_type, coupon_tickets.qr_code_path AS coupon_tickets_qr_code_path, coupon_tickets.is_used AS coupon_tickets_is_used, coupon_tickets.used_at AS coupon_tickets_used_at, coupon_tickets.used_by AS coupon_tickets_used_by, coupon_tickets.created_at AS coupon_tickets_created_at 
+FROM coupon_tickets 
+WHERE ? = coupon_tickets.booking_id ORDER BY coupon_tickets.created_at
+2026-05-07 16:50:26,260 INFO sqlalchemy.engine.Engine [generated in 0.00077s] ('4f3e0978-ab07-49b7-872e-eb95b9983ce2',)
+INFO:     127.0.0.1:49740 - "POST /api/coupons/ HTTP/1.1" 200 OK
+2026-05-07 16:50:30,703 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:     127.0.0.1:61640 - "OPTIONS /api/coupons/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1MjY5Nn0.bbD-FooC9uyknCmNMW8bk2gC0EG70WYTOtgVdCRKB4M HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54289 - "OPTIONS /api/coupons/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1MjY5Nn0.bbD-FooC9uyknCmNMW8bk2gC0EG70WYTOtgVdCRKB4M HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61640 - "GET /api/coupons/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1MjY5Nn0.bbD-FooC9uyknCmNMW8bk2gC0EG70WYTOtgVdCRKB4M HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:61640 - "GET /api/coupons/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1MjY5Nn0.bbD-FooC9uyknCmNMW8bk2gC0EG70WYTOtgVdCRKB4M HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:61640 - "OPTIONS /api/coupons/event/Event1/dashboard?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1MjY5Nn0.bbD-FooC9uyknCmNMW8bk2gC0EG70WYTOtgVdCRKB4M HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61640 - "GET /api/coupons/event/Event1/dashboard?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1MjY5Nn0.bbD-FooC9uyknCmNMW8bk2gC0EG70WYTOtgVdCRKB4M HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:64652 - "OPTIONS /api/coupons/payment/info?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1MjY5Nn0.bbD-FooC9uyknCmNMW8bk2gC0EG70WYTOtgVdCRKB4M HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64652 - "OPTIONS /api/coupons/menus/?include_inactive=true&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1MjY5Nn0.bbD-FooC9uyknCmNMW8bk2gC0EG70WYTOtgVdCRKB4M HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64652 - "OPTIONS /api/coupons/payment/info?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1MjY5Nn0.bbD-FooC9uyknCmNMW8bk2gC0EG70WYTOtgVdCRKB4M HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64652 - "OPTIONS /api/coupons/menus/?include_inactive=true&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1MjY5Nn0.bbD-FooC9uyknCmNMW8bk2gC0EG70WYTOtgVdCRKB4M HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64652 - "GET /api/coupons/payment/info?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1MjY5Nn0.bbD-FooC9uyknCmNMW8bk2gC0EG70WYTOtgVdCRKB4M HTTP/1.1" 200 OK
+2026-05-07 16:52:13,788 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-05-07 16:52:13,790 INFO sqlalchemy.engine.Engine SELECT coupon_menus.id AS coupon_menus_id, coupon_menus.event_name AS coupon_menus_event_name, coupon_menus.event_date AS coupon_menus_event_date, coupon_menus.veg_price AS coupon_menus_veg_price, coupon_menus.nonveg_price AS coupon_menus_nonveg_price, coupon_menus.veg_menu AS coupon_menus_veg_menu, coupon_menus.nonveg_menu AS coupon_menus_nonveg_menu, coupon_menus.veg_image AS coupon_menus_veg_image, coupon_menus.nonveg_image AS coupon_menus_nonveg_image, coupon_menus.is_active AS coupon_menus_is_active, coupon_menus.created_by AS coupon_menus_created_by, coupon_menus.created_at AS coupon_menus_created_at, coupon_menus.updated_at AS coupon_menus_updated_at 
+FROM coupon_menus ORDER BY coupon_menus.created_at DESC
+2026-05-07 16:52:13,791 INFO sqlalchemy.engine.Engine [generated in 0.00059s] ()
+INFO:     127.0.0.1:64652 - "GET /api/coupons/menus/?include_inactive=true&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1MjY5Nn0.bbD-FooC9uyknCmNMW8bk2gC0EG70WYTOtgVdCRKB4M HTTP/1.1" 200 OK
+2026-05-07 16:52:13,793 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:     127.0.0.1:64652 - "GET /api/coupons/payment/info?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1MjY5Nn0.bbD-FooC9uyknCmNMW8bk2gC0EG70WYTOtgVdCRKB4M HTTP/1.1" 200 OK
+2026-05-07 16:52:13,798 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-05-07 16:52:13,799 INFO sqlalchemy.engine.Engine SELECT coupon_menus.id AS coupon_menus_id, coupon_menus.event_name AS coupon_menus_event_name, coupon_menus.event_date AS coupon_menus_event_date, coupon_menus.veg_price AS coupon_menus_veg_price, coupon_menus.nonveg_price AS coupon_menus_nonveg_price, coupon_menus.veg_menu AS coupon_menus_veg_menu, coupon_menus.nonveg_menu AS coupon_menus_nonveg_menu, coupon_menus.veg_image AS coupon_menus_veg_image, coupon_menus.nonveg_image AS coupon_menus_nonveg_image, coupon_menus.is_active AS coupon_menus_is_active, coupon_menus.created_by AS coupon_menus_created_by, coupon_menus.created_at AS coupon_menus_created_at, coupon_menus.updated_at AS coupon_menus_updated_at 
+FROM coupon_menus ORDER BY coupon_menus.created_at DESC
+2026-05-07 16:52:13,799 INFO sqlalchemy.engine.Engine [cached since 0.009449s ago] ()
+INFO:     127.0.0.1:64652 - "GET /api/coupons/menus/?include_inactive=true&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1MjY5Nn0.bbD-FooC9uyknCmNMW8bk2gC0EG70WYTOtgVdCRKB4M HTTP/1.1" 200 OK
+2026-05-07 16:52:13,802 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:     127.0.0.1:64652 - "GET /api/coupons/event/Event1/dashboard?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1MjY5Nn0.bbD-FooC9uyknCmNMW8bk2gC0EG70WYTOtgVdCRKB4M HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:64652 - "OPTIONS /api/coupons/event/Durga%20Puja%202026/dashboard?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1MjY5Nn0.bbD-FooC9uyknCmNMW8bk2gC0EG70WYTOtgVdCRKB4M HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64652 - "GET /api/coupons/event/Durga%20Puja%202026/dashboard?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1MjY5Nn0.bbD-FooC9uyknCmNMW8bk2gC0EG70WYTOtgVdCRKB4M HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:64652 - "OPTIONS /api/coupons/event/ABC/dashboard?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1MjY5Nn0.bbD-FooC9uyknCmNMW8bk2gC0EG70WYTOtgVdCRKB4M HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64652 - "GET /api/coupons/event/ABC/dashboard?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1MjY5Nn0.bbD-FooC9uyknCmNMW8bk2gC0EG70WYTOtgVdCRKB4M HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:64652 - "GET /api/coupons/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1MjY5Nn0.bbD-FooC9uyknCmNMW8bk2gC0EG70WYTOtgVdCRKB4M HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:64652 - "GET /api/coupons/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1MjY5Nn0.bbD-FooC9uyknCmNMW8bk2gC0EG70WYTOtgVdCRKB4M HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:64652 - "GET /api/coupons/payment/info?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1MjY5Nn0.bbD-FooC9uyknCmNMW8bk2gC0EG70WYTOtgVdCRKB4M HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64652 - "GET /api/coupons/payment/info?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1MjY5Nn0.bbD-FooC9uyknCmNMW8bk2gC0EG70WYTOtgVdCRKB4M HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60819 - "OPTIONS /api/auth/login HTTP/1.1" 200 OK
+2026-05-07 16:52:29,127 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-05-07 16:52:29,130 INFO sqlalchemy.engine.Engine SELECT users.id AS users_id, users.username AS users_username, users.password AS users_password, users.role AS users_role, users.created_at AS users_created_at, users.updated_at AS users_updated_at 
+FROM users 
+WHERE users.username = ?
+ LIMIT ? OFFSET ?
+2026-05-07 16:52:29,135 INFO sqlalchemy.engine.Engine [cached since 123s ago] ('admin', 1, 0)
+INFO:     127.0.0.1:58581 - "POST /api/auth/login HTTP/1.1" 200 OK
+2026-05-07 16:52:29,154 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:     127.0.0.1:58581 - "OPTIONS /api/coupons/payment/info?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1NDc0OX0.UXBb5CgzM0SFpl2zBqikAM2HWKdaNSKDUgx-qIfwgwY HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60819 - "OPTIONS /api/coupons/menus/?include_inactive=true&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1NDc0OX0.UXBb5CgzM0SFpl2zBqikAM2HWKdaNSKDUgx-qIfwgwY HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64598 - "OPTIONS /api/coupons/payment/info?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1NDc0OX0.UXBb5CgzM0SFpl2zBqikAM2HWKdaNSKDUgx-qIfwgwY HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50719 - "OPTIONS /api/coupons/menus/?include_inactive=true&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1NDc0OX0.UXBb5CgzM0SFpl2zBqikAM2HWKdaNSKDUgx-qIfwgwY HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58581 - "GET /api/coupons/payment/info?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1NDc0OX0.UXBb5CgzM0SFpl2zBqikAM2HWKdaNSKDUgx-qIfwgwY HTTP/1.1" 200 OK
+2026-05-07 16:52:30,332 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-05-07 16:52:30,333 INFO sqlalchemy.engine.Engine SELECT coupon_menus.id AS coupon_menus_id, coupon_menus.event_name AS coupon_menus_event_name, coupon_menus.event_date AS coupon_menus_event_date, coupon_menus.veg_price AS coupon_menus_veg_price, coupon_menus.nonveg_price AS coupon_menus_nonveg_price, coupon_menus.veg_menu AS coupon_menus_veg_menu, coupon_menus.nonveg_menu AS coupon_menus_nonveg_menu, coupon_menus.veg_image AS coupon_menus_veg_image, coupon_menus.nonveg_image AS coupon_menus_nonveg_image, coupon_menus.is_active AS coupon_menus_is_active, coupon_menus.created_by AS coupon_menus_created_by, coupon_menus.created_at AS coupon_menus_created_at, coupon_menus.updated_at AS coupon_menus_updated_at 
+FROM coupon_menus ORDER BY coupon_menus.created_at DESC
+2026-05-07 16:52:30,334 INFO sqlalchemy.engine.Engine [cached since 16.54s ago] ()
+INFO:     127.0.0.1:50381 - "GET /api/coupons/menus/?include_inactive=true&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1NDc0OX0.UXBb5CgzM0SFpl2zBqikAM2HWKdaNSKDUgx-qIfwgwY HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58581 - "GET /api/coupons/payment/info?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1NDc0OX0.UXBb5CgzM0SFpl2zBqikAM2HWKdaNSKDUgx-qIfwgwY HTTP/1.1" 200 OK
+2026-05-07 16:52:30,341 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-05-07 16:52:30,347 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-05-07 16:52:30,348 INFO sqlalchemy.engine.Engine SELECT coupon_menus.id AS coupon_menus_id, coupon_menus.event_name AS coupon_menus_event_name, coupon_menus.event_date AS coupon_menus_event_date, coupon_menus.veg_price AS coupon_menus_veg_price, coupon_menus.nonveg_price AS coupon_menus_nonveg_price, coupon_menus.veg_menu AS coupon_menus_veg_menu, coupon_menus.nonveg_menu AS coupon_menus_nonveg_menu, coupon_menus.veg_image AS coupon_menus_veg_image, coupon_menus.nonveg_image AS coupon_menus_nonveg_image, coupon_menus.is_active AS coupon_menus_is_active, coupon_menus.created_by AS coupon_menus_created_by, coupon_menus.created_at AS coupon_menus_created_at, coupon_menus.updated_at AS coupon_menus_updated_at 
+FROM coupon_menus ORDER BY coupon_menus.created_at DESC
+2026-05-07 16:52:30,349 INFO sqlalchemy.engine.Engine [cached since 16.56s ago] ()
+INFO:     127.0.0.1:50381 - "GET /api/coupons/menus/?include_inactive=true&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1NDc0OX0.UXBb5CgzM0SFpl2zBqikAM2HWKdaNSKDUgx-qIfwgwY HTTP/1.1" 200 OK
+2026-05-07 16:52:30,355 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:     127.0.0.1:50381 - "OPTIONS /api/coupons/event/Event1/dashboard?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1NDc0OX0.UXBb5CgzM0SFpl2zBqikAM2HWKdaNSKDUgx-qIfwgwY HTTP/1.1" 200 OK
+2026-05-07 16:52:31,315 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-05-07 16:52:31,318 INFO sqlalchemy.engine.Engine SELECT coupons.id AS coupons_id, coupons.flat_number AS coupons_flat_number, coupons.email AS coupons_email, coupons.event_name AS coupons_event_name, coupons.pax AS coupons_pax, coupons.veg_count AS coupons_veg_count, coupons.nonveg_count AS coupons_nonveg_count, coupons.total_amount AS coupons_total_amount, coupons.qr_code_path AS coupons_qr_code_path, coupons.is_verified AS coupons_is_verified, coupons.created_by AS coupons_created_by, coupons.created_at AS coupons_created_at, coupons.verified_at AS coupons_verified_at 
+FROM coupons 
+WHERE coupons.event_name = ? ORDER BY coupons.created_at DESC
+2026-05-07 16:52:31,319 INFO sqlalchemy.engine.Engine [generated in 0.00098s] ('Event1',)
+2026-05-07 16:52:31,321 INFO sqlalchemy.engine.Engine SELECT coupon_tickets.id AS coupon_tickets_id, coupon_tickets.booking_id AS coupon_tickets_booking_id, coupon_tickets.event_name AS coupon_tickets_event_name, coupon_tickets.ticket_type AS coupon_tickets_ticket_type, coupon_tickets.qr_code_path AS coupon_tickets_qr_code_path, coupon_tickets.is_used AS coupon_tickets_is_used, coupon_tickets.used_at AS coupon_tickets_used_at, coupon_tickets.used_by AS coupon_tickets_used_by, coupon_tickets.created_at AS coupon_tickets_created_at 
+FROM coupon_tickets 
+WHERE ? = coupon_tickets.booking_id ORDER BY coupon_tickets.created_at
+2026-05-07 16:52:31,322 INFO sqlalchemy.engine.Engine [cached since 125.1s ago] ('c78f5aab-707e-4c27-8038-50cede2c77a0',)
+2026-05-07 16:52:31,325 INFO sqlalchemy.engine.Engine SELECT coupon_tickets.id AS coupon_tickets_id, coupon_tickets.booking_id AS coupon_tickets_booking_id, coupon_tickets.event_name AS coupon_tickets_event_name, coupon_tickets.ticket_type AS coupon_tickets_ticket_type, coupon_tickets.qr_code_path AS coupon_tickets_qr_code_path, coupon_tickets.is_used AS coupon_tickets_is_used, coupon_tickets.used_at AS coupon_tickets_used_at, coupon_tickets.used_by AS coupon_tickets_used_by, coupon_tickets.created_at AS coupon_tickets_created_at 
+FROM coupon_tickets 
+WHERE ? = coupon_tickets.booking_id ORDER BY coupon_tickets.created_at
+2026-05-07 16:52:31,326 INFO sqlalchemy.engine.Engine [cached since 125.1s ago] ('92699dbd-0ff5-49ae-8927-b0acb5a824fe',)
+INFO:     127.0.0.1:50381 - "GET /api/coupons/event/Event1/dashboard?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1NDc0OX0.UXBb5CgzM0SFpl2zBqikAM2HWKdaNSKDUgx-qIfwgwY HTTP/1.1" 200 OK
+2026-05-07 16:52:31,330 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-05-07 16:52:41,620 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-05-07 16:52:41,622 INFO sqlalchemy.engine.Engine SELECT coupons.id AS coupons_id, coupons.flat_number AS coupons_flat_number, coupons.email AS coupons_email, coupons.event_name AS coupons_event_name, coupons.pax AS coupons_pax, coupons.veg_count AS coupons_veg_count, coupons.nonveg_count AS coupons_nonveg_count, coupons.total_amount AS coupons_total_amount, coupons.qr_code_path AS coupons_qr_code_path, coupons.is_verified AS coupons_is_verified, coupons.created_by AS coupons_created_by, coupons.created_at AS coupons_created_at, coupons.verified_at AS coupons_verified_at 
+FROM coupons 
+WHERE coupons.event_name = ? ORDER BY coupons.created_at DESC
+2026-05-07 16:52:41,623 INFO sqlalchemy.engine.Engine [cached since 10.31s ago] ('Event1',)
+2026-05-07 16:52:41,624 INFO sqlalchemy.engine.Engine SELECT coupon_tickets.id AS coupon_tickets_id, coupon_tickets.booking_id AS coupon_tickets_booking_id, coupon_tickets.event_name AS coupon_tickets_event_name, coupon_tickets.ticket_type AS coupon_tickets_ticket_type, coupon_tickets.qr_code_path AS coupon_tickets_qr_code_path, coupon_tickets.is_used AS coupon_tickets_is_used, coupon_tickets.used_at AS coupon_tickets_used_at, coupon_tickets.used_by AS coupon_tickets_used_by, coupon_tickets.created_at AS coupon_tickets_created_at 
+FROM coupon_tickets 
+WHERE ? = coupon_tickets.booking_id ORDER BY coupon_tickets.created_at
+2026-05-07 16:52:41,625 INFO sqlalchemy.engine.Engine [cached since 135.4s ago] ('c78f5aab-707e-4c27-8038-50cede2c77a0',)
+2026-05-07 16:52:41,626 INFO sqlalchemy.engine.Engine SELECT coupon_tickets.id AS coupon_tickets_id, coupon_tickets.booking_id AS coupon_tickets_booking_id, coupon_tickets.event_name AS coupon_tickets_event_name, coupon_tickets.ticket_type AS coupon_tickets_ticket_type, coupon_tickets.qr_code_path AS coupon_tickets_qr_code_path, coupon_tickets.is_used AS coupon_tickets_is_used, coupon_tickets.used_at AS coupon_tickets_used_at, coupon_tickets.used_by AS coupon_tickets_used_by, coupon_tickets.created_at AS coupon_tickets_created_at 
+FROM coupon_tickets 
+WHERE ? = coupon_tickets.booking_id ORDER BY coupon_tickets.created_at
+2026-05-07 16:52:41,626 INFO sqlalchemy.engine.Engine [cached since 135.4s ago] ('92699dbd-0ff5-49ae-8927-b0acb5a824fe',)
+INFO:     127.0.0.1:58946 - "GET /api/coupons/event/Event1/dashboard?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1NDc0OX0.UXBb5CgzM0SFpl2zBqikAM2HWKdaNSKDUgx-qIfwgwY HTTP/1.1" 200 OK
+2026-05-07 16:52:41,628 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:     127.0.0.1:58946 - "GET /api/coupons/payment/info?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1NDc0OX0.UXBb5CgzM0SFpl2zBqikAM2HWKdaNSKDUgx-qIfwgwY HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58946 - "GET /api/coupons/payment/info?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1NDc0OX0.UXBb5CgzM0SFpl2zBqikAM2HWKdaNSKDUgx-qIfwgwY HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56552 - "OPTIONS /api/coupons/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1NDc0OX0.UXBb5CgzM0SFpl2zBqikAM2HWKdaNSKDUgx-qIfwgwY HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56552 - "OPTIONS /api/coupons/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1NDc0OX0.UXBb5CgzM0SFpl2zBqikAM2HWKdaNSKDUgx-qIfwgwY HTTP/1.1" 200 OK
+2026-05-07 16:52:52,566 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-05-07 16:52:52,569 INFO sqlalchemy.engine.Engine SELECT coupons.id AS coupons_id, coupons.flat_number AS coupons_flat_number, coupons.email AS coupons_email, coupons.event_name AS coupons_event_name, coupons.pax AS coupons_pax, coupons.veg_count AS coupons_veg_count, coupons.nonveg_count AS coupons_nonveg_count, coupons.total_amount AS coupons_total_amount, coupons.qr_code_path AS coupons_qr_code_path, coupons.is_verified AS coupons_is_verified, coupons.created_by AS coupons_created_by, coupons.created_at AS coupons_created_at, coupons.verified_at AS coupons_verified_at 
+FROM coupons 
+WHERE coupons.created_by = ? ORDER BY coupons.created_at DESC
+2026-05-07 16:52:52,571 INFO sqlalchemy.engine.Engine [generated in 0.00214s] ('admin',)
+2026-05-07 16:52:52,574 INFO sqlalchemy.engine.Engine SELECT coupon_tickets.id AS coupon_tickets_id, coupon_tickets.booking_id AS coupon_tickets_booking_id, coupon_tickets.event_name AS coupon_tickets_event_name, coupon_tickets.ticket_type AS coupon_tickets_ticket_type, coupon_tickets.qr_code_path AS coupon_tickets_qr_code_path, coupon_tickets.is_used AS coupon_tickets_is_used, coupon_tickets.used_at AS coupon_tickets_used_at, coupon_tickets.used_by AS coupon_tickets_used_by, coupon_tickets.created_at AS coupon_tickets_created_at 
+FROM coupon_tickets 
+WHERE ? = coupon_tickets.booking_id ORDER BY coupon_tickets.created_at
+2026-05-07 16:52:52,575 INFO sqlalchemy.engine.Engine [cached since 146.3s ago] ('4f3e0978-ab07-49b7-872e-eb95b9983ce2',)
+2026-05-07 16:52:52,581 INFO sqlalchemy.engine.Engine SELECT coupon_tickets.id AS coupon_tickets_id, coupon_tickets.booking_id AS coupon_tickets_booking_id, coupon_tickets.event_name AS coupon_tickets_event_name, coupon_tickets.ticket_type AS coupon_tickets_ticket_type, coupon_tickets.qr_code_path AS coupon_tickets_qr_code_path, coupon_tickets.is_used AS coupon_tickets_is_used, coupon_tickets.used_at AS coupon_tickets_used_at, coupon_tickets.used_by AS coupon_tickets_used_by, coupon_tickets.created_at AS coupon_tickets_created_at 
+FROM coupon_tickets 
+WHERE ? = coupon_tickets.booking_id ORDER BY coupon_tickets.created_at
+2026-05-07 16:52:52,586 INFO sqlalchemy.engine.Engine [cached since 146.3s ago] ('572b5965-780a-479a-931f-023da67a0391',)
+2026-05-07 16:52:52,587 INFO sqlalchemy.engine.Engine SELECT coupon_tickets.id AS coupon_tickets_id, coupon_tickets.booking_id AS coupon_tickets_booking_id, coupon_tickets.event_name AS coupon_tickets_event_name, coupon_tickets.ticket_type AS coupon_tickets_ticket_type, coupon_tickets.qr_code_path AS coupon_tickets_qr_code_path, coupon_tickets.is_used AS coupon_tickets_is_used, coupon_tickets.used_at AS coupon_tickets_used_at, coupon_tickets.used_by AS coupon_tickets_used_by, coupon_tickets.created_at AS coupon_tickets_created_at 
+FROM coupon_tickets 
+WHERE ? = coupon_tickets.booking_id ORDER BY coupon_tickets.created_at
+2026-05-07 16:52:52,588 INFO sqlalchemy.engine.Engine [cached since 146.3s ago] ('fcb9bddc-73dc-458a-a5d0-753955652844',)
+2026-05-07 16:52:52,590 INFO sqlalchemy.engine.Engine SELECT coupon_tickets.id AS coupon_tickets_id, coupon_tickets.booking_id AS coupon_tickets_booking_id, coupon_tickets.event_name AS coupon_tickets_event_name, coupon_tickets.ticket_type AS coupon_tickets_ticket_type, coupon_tickets.qr_code_path AS coupon_tickets_qr_code_path, coupon_tickets.is_used AS coupon_tickets_is_used, coupon_tickets.used_at AS coupon_tickets_used_at, coupon_tickets.used_by AS coupon_tickets_used_by, coupon_tickets.created_at AS coupon_tickets_created_at 
+FROM coupon_tickets 
+WHERE ? = coupon_tickets.booking_id ORDER BY coupon_tickets.created_at
+2026-05-07 16:52:52,591 INFO sqlalchemy.engine.Engine [cached since 146.3s ago] ('92699dbd-0ff5-49ae-8927-b0acb5a824fe',)
+2026-05-07 16:52:52,594 INFO sqlalchemy.engine.Engine SELECT coupon_tickets.id AS coupon_tickets_id, coupon_tickets.booking_id AS coupon_tickets_booking_id, coupon_tickets.event_name AS coupon_tickets_event_name, coupon_tickets.ticket_type AS coupon_tickets_ticket_type, coupon_tickets.qr_code_path AS coupon_tickets_qr_code_path, coupon_tickets.is_used AS coupon_tickets_is_used, coupon_tickets.used_at AS coupon_tickets_used_at, coupon_tickets.used_by AS coupon_tickets_used_by, coupon_tickets.created_at AS coupon_tickets_created_at 
+FROM coupon_tickets 
+WHERE ? = coupon_tickets.booking_id ORDER BY coupon_tickets.created_at
+2026-05-07 16:52:52,595 INFO sqlalchemy.engine.Engine [cached since 146.3s ago] ('f4709a52-7c4f-4e11-a25e-5307a6cf23f1',)
+2026-05-07 16:52:52,598 INFO sqlalchemy.engine.Engine SELECT coupon_tickets.id AS coupon_tickets_id, coupon_tickets.booking_id AS coupon_tickets_booking_id, coupon_tickets.event_name AS coupon_tickets_event_name, coupon_tickets.ticket_type AS coupon_tickets_ticket_type, coupon_tickets.qr_code_path AS coupon_tickets_qr_code_path, coupon_tickets.is_used AS coupon_tickets_is_used, coupon_tickets.used_at AS coupon_tickets_used_at, coupon_tickets.used_by AS coupon_tickets_used_by, coupon_tickets.created_at AS coupon_tickets_created_at 
+FROM coupon_tickets 
+WHERE ? = coupon_tickets.booking_id ORDER BY coupon_tickets.created_at
+2026-05-07 16:52:52,599 INFO sqlalchemy.engine.Engine [cached since 146.3s ago] ('70193a1b-e934-42fa-a5a1-3e8abacbc7e6',)
+INFO:     127.0.0.1:56552 - "GET /api/coupons/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1NDc0OX0.UXBb5CgzM0SFpl2zBqikAM2HWKdaNSKDUgx-qIfwgwY HTTP/1.1" 200 OK
+2026-05-07 16:52:52,602 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-05-07 16:52:52,605 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-05-07 16:52:52,605 INFO sqlalchemy.engine.Engine SELECT coupons.id AS coupons_id, coupons.flat_number AS coupons_flat_number, coupons.email AS coupons_email, coupons.event_name AS coupons_event_name, coupons.pax AS coupons_pax, coupons.veg_count AS coupons_veg_count, coupons.nonveg_count AS coupons_nonveg_count, coupons.total_amount AS coupons_total_amount, coupons.qr_code_path AS coupons_qr_code_path, coupons.is_verified AS coupons_is_verified, coupons.created_by AS coupons_created_by, coupons.created_at AS coupons_created_at, coupons.verified_at AS coupons_verified_at 
+FROM coupons 
+WHERE coupons.created_by = ? ORDER BY coupons.created_at DESC
+2026-05-07 16:52:52,606 INFO sqlalchemy.engine.Engine [cached since 0.03733s ago] ('admin',)
+2026-05-07 16:52:52,607 INFO sqlalchemy.engine.Engine SELECT coupon_tickets.id AS coupon_tickets_id, coupon_tickets.booking_id AS coupon_tickets_booking_id, coupon_tickets.event_name AS coupon_tickets_event_name, coupon_tickets.ticket_type AS coupon_tickets_ticket_type, coupon_tickets.qr_code_path AS coupon_tickets_qr_code_path, coupon_tickets.is_used AS coupon_tickets_is_used, coupon_tickets.used_at AS coupon_tickets_used_at, coupon_tickets.used_by AS coupon_tickets_used_by, coupon_tickets.created_at AS coupon_tickets_created_at 
+FROM coupon_tickets 
+WHERE ? = coupon_tickets.booking_id ORDER BY coupon_tickets.created_at
+2026-05-07 16:52:52,608 INFO sqlalchemy.engine.Engine [cached since 146.3s ago] ('4f3e0978-ab07-49b7-872e-eb95b9983ce2',)
+2026-05-07 16:52:52,611 INFO sqlalchemy.engine.Engine SELECT coupon_tickets.id AS coupon_tickets_id, coupon_tickets.booking_id AS coupon_tickets_booking_id, coupon_tickets.event_name AS coupon_tickets_event_name, coupon_tickets.ticket_type AS coupon_tickets_ticket_type, coupon_tickets.qr_code_path AS coupon_tickets_qr_code_path, coupon_tickets.is_used AS coupon_tickets_is_used, coupon_tickets.used_at AS coupon_tickets_used_at, coupon_tickets.used_by AS coupon_tickets_used_by, coupon_tickets.created_at AS coupon_tickets_created_at 
+FROM coupon_tickets 
+WHERE ? = coupon_tickets.booking_id ORDER BY coupon_tickets.created_at
+2026-05-07 16:52:52,612 INFO sqlalchemy.engine.Engine [cached since 146.4s ago] ('572b5965-780a-479a-931f-023da67a0391',)
+2026-05-07 16:52:52,614 INFO sqlalchemy.engine.Engine SELECT coupon_tickets.id AS coupon_tickets_id, coupon_tickets.booking_id AS coupon_tickets_booking_id, coupon_tickets.event_name AS coupon_tickets_event_name, coupon_tickets.ticket_type AS coupon_tickets_ticket_type, coupon_tickets.qr_code_path AS coupon_tickets_qr_code_path, coupon_tickets.is_used AS coupon_tickets_is_used, coupon_tickets.used_at AS coupon_tickets_used_at, coupon_tickets.used_by AS coupon_tickets_used_by, coupon_tickets.created_at AS coupon_tickets_created_at 
+FROM coupon_tickets 
+WHERE ? = coupon_tickets.booking_id ORDER BY coupon_tickets.created_at
+2026-05-07 16:52:52,615 INFO sqlalchemy.engine.Engine [cached since 146.4s ago] ('fcb9bddc-73dc-458a-a5d0-753955652844',)
+2026-05-07 16:52:52,617 INFO sqlalchemy.engine.Engine SELECT coupon_tickets.id AS coupon_tickets_id, coupon_tickets.booking_id AS coupon_tickets_booking_id, coupon_tickets.event_name AS coupon_tickets_event_name, coupon_tickets.ticket_type AS coupon_tickets_ticket_type, coupon_tickets.qr_code_path AS coupon_tickets_qr_code_path, coupon_tickets.is_used AS coupon_tickets_is_used, coupon_tickets.used_at AS coupon_tickets_used_at, coupon_tickets.used_by AS coupon_tickets_used_by, coupon_tickets.created_at AS coupon_tickets_created_at 
+FROM coupon_tickets 
+WHERE ? = coupon_tickets.booking_id ORDER BY coupon_tickets.created_at
+2026-05-07 16:52:52,617 INFO sqlalchemy.engine.Engine [cached since 146.4s ago] ('92699dbd-0ff5-49ae-8927-b0acb5a824fe',)
+2026-05-07 16:52:52,621 INFO sqlalchemy.engine.Engine SELECT coupon_tickets.id AS coupon_tickets_id, coupon_tickets.booking_id AS coupon_tickets_booking_id, coupon_tickets.event_name AS coupon_tickets_event_name, coupon_tickets.ticket_type AS coupon_tickets_ticket_type, coupon_tickets.qr_code_path AS coupon_tickets_qr_code_path, coupon_tickets.is_used AS coupon_tickets_is_used, coupon_tickets.used_at AS coupon_tickets_used_at, coupon_tickets.used_by AS coupon_tickets_used_by, coupon_tickets.created_at AS coupon_tickets_created_at 
+FROM coupon_tickets 
+WHERE ? = coupon_tickets.booking_id ORDER BY coupon_tickets.created_at
+2026-05-07 16:52:52,623 INFO sqlalchemy.engine.Engine [cached since 146.4s ago] ('f4709a52-7c4f-4e11-a25e-5307a6cf23f1',)
+2026-05-07 16:52:52,625 INFO sqlalchemy.engine.Engine SELECT coupon_tickets.id AS coupon_tickets_id, coupon_tickets.booking_id AS coupon_tickets_booking_id, coupon_tickets.event_name AS coupon_tickets_event_name, coupon_tickets.ticket_type AS coupon_tickets_ticket_type, coupon_tickets.qr_code_path AS coupon_tickets_qr_code_path, coupon_tickets.is_used AS coupon_tickets_is_used, coupon_tickets.used_at AS coupon_tickets_used_at, coupon_tickets.used_by AS coupon_tickets_used_by, coupon_tickets.created_at AS coupon_tickets_created_at 
+FROM coupon_tickets 
+WHERE ? = coupon_tickets.booking_id ORDER BY coupon_tickets.created_at
+2026-05-07 16:52:52,627 INFO sqlalchemy.engine.Engine [cached since 146.4s ago] ('70193a1b-e934-42fa-a5a1-3e8abacbc7e6',)
+INFO:     127.0.0.1:56552 - "GET /api/coupons/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1NDc0OX0.UXBb5CgzM0SFpl2zBqikAM2HWKdaNSKDUgx-qIfwgwY HTTP/1.1" 200 OK
+2026-05-07 16:52:52,633 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:     127.0.0.1:58451 - "GET /storage/qrcodes/ticket_a003986d-63ed-4b7d-882e-d53592e63c8d.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57005 - "GET /storage/qrcodes/ticket_525df3b1-efc2-42e7-8bc6-f25d66ed7649.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:58380 - "GET /storage/qrcodes/ticket_8a090f31-9d82-442e-9d4c-e99afe09f183.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59671 - "GET /storage/qrcodes/ticket_5cdaaf59-d0bf-433a-b8aa-0c0e8ca2f24a.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61304 - "GET /storage/qrcodes/ticket_d9035b94-bfcd-4c3c-87f3-496f8e54d3ed.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:57005 - "GET /storage/qrcodes/ticket_1485bd22-f76c-4a15-93e7-9054974b22c0.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:58380 - "GET /storage/qrcodes/ticket_9af8722e-fbd6-4eef-a048-dd737238cdc9.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:61304 - "GET /storage/qrcodes/ticket_6d2d016a-a756-4aa0-bc65-be4b45626517.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64702 - "GET /storage/qrcodes/ticket_85d84958-fa30-4fa3-ba1f-561ea69b3ae0.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59671 - "GET /storage/qrcodes/ticket_e6fb1465-ad2f-4fdf-ac51-de8f24fc80de.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:58451 - "GET /storage/qrcodes/ticket_d374d1d3-362b-4722-9147-2b37b97f68e5.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:58380 - "GET /storage/qrcodes/ticket_c6bf90f3-315d-43bb-8180-8daf1ab662f6.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64702 - "GET /storage/qrcodes/ticket_15ca8528-5f9f-4aa5-b0d5-a2bd2312b9ff.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:57005 - "GET /storage/qrcodes/ticket_5a5560b9-4fbd-499d-85a8-f676e64e1ab0.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:61304 - "GET /storage/qrcodes/ticket_aaaf4f15-b42f-4b93-a09c-4ccfc8a75494.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:58451 - "GET /storage/qrcodes/ticket_a782c4be-88d6-49c1-9ffb-792d6ed6a5f1.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:57005 - "GET /storage/qrcodes/ticket_708f50fb-f9a5-4f86-bb7e-eef54c36edd6.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64702 - "GET /storage/qrcodes/ticket_c9c14be7-5547-4484-8586-e27e532f978a.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:61304 - "GET /storage/qrcodes/ticket_12d30b97-28b5-49d3-8dbf-31e90554bcb4.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:58380 - "GET /storage/qrcodes/ticket_cb1ea29b-be41-4861-925b-702760884627.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59671 - "GET /storage/qrcodes/ticket_4b784117-ba46-4bbb-aada-939a70c78cad.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:57005 - "GET /storage/qrcodes/ticket_c2e82c9a-4b3c-456d-bc5b-35b27d94ed5a.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64702 - "GET /storage/qrcodes/ticket_588ad276-44f8-4b95-a36b-031019d199b3.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:61304 - "GET /storage/qrcodes/ticket_1640b735-aae5-4e9f-a32c-589d1825ddec.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:58380 - "GET /storage/qrcodes/ticket_2fc8b48e-6bfc-4ccb-922a-3263e9b6795c.png HTTP/1.1" 304 Not Modified
+2026-05-07 16:52:59,939 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-05-07 16:52:59,941 INFO sqlalchemy.engine.Engine SELECT coupons.id AS coupons_id, coupons.flat_number AS coupons_flat_number, coupons.email AS coupons_email, coupons.event_name AS coupons_event_name, coupons.pax AS coupons_pax, coupons.veg_count AS coupons_veg_count, coupons.nonveg_count AS coupons_nonveg_count, coupons.total_amount AS coupons_total_amount, coupons.qr_code_path AS coupons_qr_code_path, coupons.is_verified AS coupons_is_verified, coupons.created_by AS coupons_created_by, coupons.created_at AS coupons_created_at, coupons.verified_at AS coupons_verified_at 
+FROM coupons 
+WHERE coupons.event_name = ? ORDER BY coupons.created_at DESC
+2026-05-07 16:52:59,942 INFO sqlalchemy.engine.Engine [cached since 28.62s ago] ('Event1',)
+2026-05-07 16:52:59,943 INFO sqlalchemy.engine.Engine SELECT coupon_tickets.id AS coupon_tickets_id, coupon_tickets.booking_id AS coupon_tickets_booking_id, coupon_tickets.event_name AS coupon_tickets_event_name, coupon_tickets.ticket_type AS coupon_tickets_ticket_type, coupon_tickets.qr_code_path AS coupon_tickets_qr_code_path, coupon_tickets.is_used AS coupon_tickets_is_used, coupon_tickets.used_at AS coupon_tickets_used_at, coupon_tickets.used_by AS coupon_tickets_used_by, coupon_tickets.created_at AS coupon_tickets_created_at 
+FROM coupon_tickets 
+WHERE ? = coupon_tickets.booking_id ORDER BY coupon_tickets.created_at
+2026-05-07 16:52:59,944 INFO sqlalchemy.engine.Engine [cached since 153.7s ago] ('c78f5aab-707e-4c27-8038-50cede2c77a0',)
+2026-05-07 16:52:59,945 INFO sqlalchemy.engine.Engine SELECT coupon_tickets.id AS coupon_tickets_id, coupon_tickets.booking_id AS coupon_tickets_booking_id, coupon_tickets.event_name AS coupon_tickets_event_name, coupon_tickets.ticket_type AS coupon_tickets_ticket_type, coupon_tickets.qr_code_path AS coupon_tickets_qr_code_path, coupon_tickets.is_used AS coupon_tickets_is_used, coupon_tickets.used_at AS coupon_tickets_used_at, coupon_tickets.used_by AS coupon_tickets_used_by, coupon_tickets.created_at AS coupon_tickets_created_at 
+FROM coupon_tickets 
+WHERE ? = coupon_tickets.booking_id ORDER BY coupon_tickets.created_at
+2026-05-07 16:52:59,945 INFO sqlalchemy.engine.Engine [cached since 153.7s ago] ('92699dbd-0ff5-49ae-8927-b0acb5a824fe',)
+INFO:     127.0.0.1:55854 - "GET /api/coupons/event/Event1/dashboard?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1NDc0OX0.UXBb5CgzM0SFpl2zBqikAM2HWKdaNSKDUgx-qIfwgwY HTTP/1.1" 200 OK
+2026-05-07 16:52:59,950 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:     127.0.0.1:58256 - "OPTIONS /api/announcements/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1NDc0OX0.UXBb5CgzM0SFpl2zBqikAM2HWKdaNSKDUgx-qIfwgwY HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58256 - "OPTIONS /api/announcements/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1NDc0OX0.UXBb5CgzM0SFpl2zBqikAM2HWKdaNSKDUgx-qIfwgwY HTTP/1.1" 200 OK
+2026-05-07 16:53:25,571 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-05-07 16:53:25,574 INFO sqlalchemy.engine.Engine SELECT announcements.id AS announcements_id, announcements.title AS announcements_title, announcements.content AS announcements_content, announcements.created_by AS announcements_created_by, announcements.is_active AS announcements_is_active, announcements.visible_until AS announcements_visible_until, announcements.created_at AS announcements_created_at, announcements.updated_at AS announcements_updated_at 
+FROM announcements 
+WHERE announcements.is_active = 1 AND (announcements.visible_until IS NULL OR announcements.visible_until > ?) ORDER BY announcements.created_at DESC
+ LIMIT ? OFFSET ?
+2026-05-07 16:53:25,575 INFO sqlalchemy.engine.Engine [generated in 0.00097s] ('2026-05-07 11:23:25.570608', 100, 0)
+INFO:     127.0.0.1:58256 - "GET /api/announcements/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1NDc0OX0.UXBb5CgzM0SFpl2zBqikAM2HWKdaNSKDUgx-qIfwgwY HTTP/1.1" 200 OK
+2026-05-07 16:53:25,578 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-05-07 16:53:25,580 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-05-07 16:53:25,581 INFO sqlalchemy.engine.Engine SELECT announcements.id AS announcements_id, announcements.title AS announcements_title, announcements.content AS announcements_content, announcements.created_by AS announcements_created_by, announcements.is_active AS announcements_is_active, announcements.visible_until AS announcements_visible_until, announcements.created_at AS announcements_created_at, announcements.updated_at AS announcements_updated_at 
+FROM announcements 
+WHERE announcements.is_active = 1 AND (announcements.visible_until IS NULL OR announcements.visible_until > ?) ORDER BY announcements.created_at DESC
+ LIMIT ? OFFSET ?
+2026-05-07 16:53:25,581 INFO sqlalchemy.engine.Engine [cached since 0.007254s ago] ('2026-05-07 11:23:25.579775', 100, 0)
+INFO:     127.0.0.1:58256 - "GET /api/announcements/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1NDc0OX0.UXBb5CgzM0SFpl2zBqikAM2HWKdaNSKDUgx-qIfwgwY HTTP/1.1" 200 OK
+2026-05-07 16:53:25,584 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:     127.0.0.1:58256 - "OPTIONS /api/subscriptions/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1NDc0OX0.UXBb5CgzM0SFpl2zBqikAM2HWKdaNSKDUgx-qIfwgwY HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52370 - "OPTIONS /api/subscriptions/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1NDc0OX0.UXBb5CgzM0SFpl2zBqikAM2HWKdaNSKDUgx-qIfwgwY HTTP/1.1" 200 OK
+2026-05-07 16:53:30,360 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-05-07 16:53:30,364 INFO sqlalchemy.engine.Engine SELECT subscriptions.id AS subscriptions_id, subscriptions.owner_name AS subscriptions_owner_name, subscriptions.contact_number AS subscriptions_contact_number, subscriptions.email AS subscriptions_email, subscriptions.unit_number AS subscriptions_unit_number, subscriptions.subscription_amount AS subscriptions_subscription_amount, subscriptions.family_members AS subscriptions_family_members, subscriptions.is_rented AS subscriptions_is_rented, subscriptions.status AS subscriptions_status, subscriptions.created_by AS subscriptions_created_by, subscriptions.created_at AS subscriptions_created_at, subscriptions.updated_at AS subscriptions_updated_at 
+FROM subscriptions
+ LIMIT ? OFFSET ?
+2026-05-07 16:53:30,364 INFO sqlalchemy.engine.Engine [generated in 0.00063s] (100, 0)
+INFO:     127.0.0.1:58256 - "GET /api/subscriptions/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1NDc0OX0.UXBb5CgzM0SFpl2zBqikAM2HWKdaNSKDUgx-qIfwgwY HTTP/1.1" 200 OK
+2026-05-07 16:53:30,368 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-05-07 16:53:30,371 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-05-07 16:53:30,372 INFO sqlalchemy.engine.Engine SELECT subscriptions.id AS subscriptions_id, subscriptions.owner_name AS subscriptions_owner_name, subscriptions.contact_number AS subscriptions_contact_number, subscriptions.email AS subscriptions_email, subscriptions.unit_number AS subscriptions_unit_number, subscriptions.subscription_amount AS subscriptions_subscription_amount, subscriptions.family_members AS subscriptions_family_members, subscriptions.is_rented AS subscriptions_is_rented, subscriptions.status AS subscriptions_status, subscriptions.created_by AS subscriptions_created_by, subscriptions.created_at AS subscriptions_created_at, subscriptions.updated_at AS subscriptions_updated_at 
+FROM subscriptions
+ LIMIT ? OFFSET ?
+2026-05-07 16:53:30,373 INFO sqlalchemy.engine.Engine [cached since 0.009444s ago] (100, 0)
+INFO:     127.0.0.1:58256 - "GET /api/subscriptions/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1NDc0OX0.UXBb5CgzM0SFpl2zBqikAM2HWKdaNSKDUgx-qIfwgwY HTTP/1.1" 200 OK
+2026-05-07 16:53:30,377 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:     127.0.0.1:58493 - "OPTIONS /api/donations/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1NDc0OX0.UXBb5CgzM0SFpl2zBqikAM2HWKdaNSKDUgx-qIfwgwY HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58493 - "OPTIONS /api/donations/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1NDc0OX0.UXBb5CgzM0SFpl2zBqikAM2HWKdaNSKDUgx-qIfwgwY HTTP/1.1" 200 OK
+2026-05-07 16:53:36,850 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-05-07 16:53:36,853 INFO sqlalchemy.engine.Engine SELECT donations.id AS donations_id, donations.donor_name AS donations_donor_name, donations.donor_email AS donations_donor_email, donations.donor_phone AS donations_donor_phone, donations.amount AS donations_amount, donations.donation_type AS donations_donation_type, donations.description AS donations_description, donations.created_by AS donations_created_by, donations.created_at AS donations_created_at, donations.updated_at AS donations_updated_at 
+FROM donations
+ LIMIT ? OFFSET ?
+2026-05-07 16:53:36,855 INFO sqlalchemy.engine.Engine [generated in 0.00177s] (100, 0)
+INFO:     127.0.0.1:58493 - "GET /api/donations/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1NDc0OX0.UXBb5CgzM0SFpl2zBqikAM2HWKdaNSKDUgx-qIfwgwY HTTP/1.1" 200 OK
+2026-05-07 16:53:36,863 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-05-07 16:53:36,867 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-05-07 16:53:36,868 INFO sqlalchemy.engine.Engine SELECT donations.id AS donations_id, donations.donor_name AS donations_donor_name, donations.donor_email AS donations_donor_email, donations.donor_phone AS donations_donor_phone, donations.amount AS donations_amount, donations.donation_type AS donations_donation_type, donations.description AS donations_description, donations.created_by AS donations_created_by, donations.created_at AS donations_created_at, donations.updated_at AS donations_updated_at 
+FROM donations
+ LIMIT ? OFFSET ?
+2026-05-07 16:53:36,869 INFO sqlalchemy.engine.Engine [cached since 0.01623s ago] (100, 0)
+INFO:     127.0.0.1:58493 - "GET /api/donations/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1NDc0OX0.UXBb5CgzM0SFpl2zBqikAM2HWKdaNSKDUgx-qIfwgwY HTTP/1.1" 200 OK
+2026-05-07 16:53:36,874 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:     127.0.0.1:58493 - "OPTIONS /api/expenses/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1NDc0OX0.UXBb5CgzM0SFpl2zBqikAM2HWKdaNSKDUgx-qIfwgwY HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51414 - "OPTIONS /api/expenses/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1NDc0OX0.UXBb5CgzM0SFpl2zBqikAM2HWKdaNSKDUgx-qIfwgwY HTTP/1.1" 200 OK
+2026-05-07 16:53:41,374 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-05-07 16:53:41,376 INFO sqlalchemy.engine.Engine SELECT expenses.id AS expenses_id, expenses.category AS expenses_category, expenses.occasion AS expenses_occasion, expenses.amount AS expenses_amount, expenses.paid_to AS expenses_paid_to, expenses.description AS expenses_description, expenses.receipt_file AS expenses_receipt_file, expenses.created_by AS expenses_created_by, expenses.created_at AS expenses_created_at, expenses.updated_at AS expenses_updated_at 
+FROM expenses
+ LIMIT ? OFFSET ?
+2026-05-07 16:53:41,377 INFO sqlalchemy.engine.Engine [generated in 0.00066s] (100, 0)
+INFO:     127.0.0.1:58493 - "GET /api/expenses/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1NDc0OX0.UXBb5CgzM0SFpl2zBqikAM2HWKdaNSKDUgx-qIfwgwY HTTP/1.1" 200 OK
+2026-05-07 16:53:41,379 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-05-07 16:53:41,382 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-05-07 16:53:41,382 INFO sqlalchemy.engine.Engine SELECT expenses.id AS expenses_id, expenses.category AS expenses_category, expenses.occasion AS expenses_occasion, expenses.amount AS expenses_amount, expenses.paid_to AS expenses_paid_to, expenses.description AS expenses_description, expenses.receipt_file AS expenses_receipt_file, expenses.created_by AS expenses_created_by, expenses.created_at AS expenses_created_at, expenses.updated_at AS expenses_updated_at 
+FROM expenses
+ LIMIT ? OFFSET ?
+2026-05-07 16:53:41,383 INFO sqlalchemy.engine.Engine [cached since 0.006658s ago] (100, 0)
+INFO:     127.0.0.1:58493 - "GET /api/expenses/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1NDc0OX0.UXBb5CgzM0SFpl2zBqikAM2HWKdaNSKDUgx-qIfwgwY HTTP/1.1" 200 OK
+2026-05-07 16:53:41,387 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:     127.0.0.1:58493 - "GET /api/coupons/payment/info?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1NDc0OX0.UXBb5CgzM0SFpl2zBqikAM2HWKdaNSKDUgx-qIfwgwY HTTP/1.1" 200 OK
+2026-05-07 16:53:45,612 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-05-07 16:53:45,613 INFO sqlalchemy.engine.Engine SELECT coupon_menus.id AS coupon_menus_id, coupon_menus.event_name AS coupon_menus_event_name, coupon_menus.event_date AS coupon_menus_event_date, coupon_menus.veg_price AS coupon_menus_veg_price, coupon_menus.nonveg_price AS coupon_menus_nonveg_price, coupon_menus.veg_menu AS coupon_menus_veg_menu, coupon_menus.nonveg_menu AS coupon_menus_nonveg_menu, coupon_menus.veg_image AS coupon_menus_veg_image, coupon_menus.nonveg_image AS coupon_menus_nonveg_image, coupon_menus.is_active AS coupon_menus_is_active, coupon_menus.created_by AS coupon_menus_created_by, coupon_menus.created_at AS coupon_menus_created_at, coupon_menus.updated_at AS coupon_menus_updated_at 
+FROM coupon_menus ORDER BY coupon_menus.created_at DESC
+2026-05-07 16:53:45,615 INFO sqlalchemy.engine.Engine [cached since 91.82s ago] ()
+INFO:     127.0.0.1:51414 - "GET /api/coupons/menus/?include_inactive=true&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1NDc0OX0.UXBb5CgzM0SFpl2zBqikAM2HWKdaNSKDUgx-qIfwgwY HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58493 - "GET /api/coupons/payment/info?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1NDc0OX0.UXBb5CgzM0SFpl2zBqikAM2HWKdaNSKDUgx-qIfwgwY HTTP/1.1" 200 OK
+2026-05-07 16:53:45,621 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-05-07 16:53:45,624 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-05-07 16:53:45,624 INFO sqlalchemy.engine.Engine SELECT coupon_menus.id AS coupon_menus_id, coupon_menus.event_name AS coupon_menus_event_name, coupon_menus.event_date AS coupon_menus_event_date, coupon_menus.veg_price AS coupon_menus_veg_price, coupon_menus.nonveg_price AS coupon_menus_nonveg_price, coupon_menus.veg_menu AS coupon_menus_veg_menu, coupon_menus.nonveg_menu AS coupon_menus_nonveg_menu, coupon_menus.veg_image AS coupon_menus_veg_image, coupon_menus.nonveg_image AS coupon_menus_nonveg_image, coupon_menus.is_active AS coupon_menus_is_active, coupon_menus.created_by AS coupon_menus_created_by, coupon_menus.created_at AS coupon_menus_created_at, coupon_menus.updated_at AS coupon_menus_updated_at 
+FROM coupon_menus ORDER BY coupon_menus.created_at DESC
+2026-05-07 16:53:45,625 INFO sqlalchemy.engine.Engine [cached since 91.83s ago] ()
+INFO:     127.0.0.1:51414 - "GET /api/coupons/menus/?include_inactive=true&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1NDc0OX0.UXBb5CgzM0SFpl2zBqikAM2HWKdaNSKDUgx-qIfwgwY HTTP/1.1" 200 OK
+2026-05-07 16:53:45,628 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:     127.0.0.1:51414 - "OPTIONS /api/reports/treasury-dashboard?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1NDc0OX0.UXBb5CgzM0SFpl2zBqikAM2HWKdaNSKDUgx-qIfwgwY HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58493 - "OPTIONS /api/reports/treasury-dashboard?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1NDc0OX0.UXBb5CgzM0SFpl2zBqikAM2HWKdaNSKDUgx-qIfwgwY HTTP/1.1" 200 OK
+2026-05-07 16:53:48,272 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-05-07 16:53:48,274 INFO sqlalchemy.engine.Engine SELECT sum(expenses.amount) AS sum_1 
+FROM expenses
+2026-05-07 16:53:48,275 INFO sqlalchemy.engine.Engine [generated in 0.00053s] ()
+2026-05-07 16:53:48,277 INFO sqlalchemy.engine.Engine SELECT expenses.category AS expenses_category, sum(expenses.amount) AS total 
+FROM expenses GROUP BY expenses.category
+2026-05-07 16:53:48,278 INFO sqlalchemy.engine.Engine [generated in 0.00131s] ()
+2026-05-07 16:53:48,280 INFO sqlalchemy.engine.Engine SELECT expenses.occasion AS expenses_occasion, sum(expenses.amount) AS total 
+FROM expenses GROUP BY expenses.occasion
+2026-05-07 16:53:48,281 INFO sqlalchemy.engine.Engine [generated in 0.00067s] ()
+2026-05-07 16:53:48,282 INFO sqlalchemy.engine.Engine SELECT sum(donations.amount) AS sum_1 
+FROM donations
+2026-05-07 16:53:48,283 INFO sqlalchemy.engine.Engine [generated in 0.00070s] ()
+2026-05-07 16:53:48,286 INFO sqlalchemy.engine.Engine SELECT donations.donation_type AS donations_donation_type, sum(donations.amount) AS total, count(donations.id) AS count 
+FROM donations GROUP BY donations.donation_type
+2026-05-07 16:53:48,286 INFO sqlalchemy.engine.Engine [generated in 0.00065s] ()
+2026-05-07 16:53:48,288 INFO sqlalchemy.engine.Engine SELECT count(subscriptions.id) AS count_1 
+FROM subscriptions
+2026-05-07 16:53:48,289 INFO sqlalchemy.engine.Engine [generated in 0.00046s] ()
+2026-05-07 16:53:48,291 INFO sqlalchemy.engine.Engine SELECT sum(subscriptions.subscription_amount) AS sum_1 
+FROM subscriptions
+2026-05-07 16:53:48,291 INFO sqlalchemy.engine.Engine [generated in 0.00066s] ()
+INFO:     127.0.0.1:51414 - "GET /api/reports/treasury-dashboard?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1NDc0OX0.UXBb5CgzM0SFpl2zBqikAM2HWKdaNSKDUgx-qIfwgwY HTTP/1.1" 200 OK
+2026-05-07 16:53:48,294 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-05-07 16:53:48,297 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-05-07 16:53:48,297 INFO sqlalchemy.engine.Engine SELECT sum(expenses.amount) AS sum_1 
+FROM expenses
+2026-05-07 16:53:48,298 INFO sqlalchemy.engine.Engine [cached since 0.02334s ago] ()
+2026-05-07 16:53:48,299 INFO sqlalchemy.engine.Engine SELECT expenses.category AS expenses_category, sum(expenses.amount) AS total 
+FROM expenses GROUP BY expenses.category
+2026-05-07 16:53:48,299 INFO sqlalchemy.engine.Engine [cached since 0.0225s ago] ()
+2026-05-07 16:53:48,301 INFO sqlalchemy.engine.Engine SELECT expenses.occasion AS expenses_occasion, sum(expenses.amount) AS total 
+FROM expenses GROUP BY expenses.occasion
+2026-05-07 16:53:48,301 INFO sqlalchemy.engine.Engine [cached since 0.02118s ago] ()
+2026-05-07 16:53:48,302 INFO sqlalchemy.engine.Engine SELECT sum(donations.amount) AS sum_1 
+FROM donations
+2026-05-07 16:53:48,303 INFO sqlalchemy.engine.Engine [cached since 0.02046s ago] ()
+2026-05-07 16:53:48,304 INFO sqlalchemy.engine.Engine SELECT donations.donation_type AS donations_donation_type, sum(donations.amount) AS total, count(donations.id) AS count 
+FROM donations GROUP BY donations.donation_type
+2026-05-07 16:53:48,305 INFO sqlalchemy.engine.Engine [cached since 0.01895s ago] ()
+2026-05-07 16:53:48,307 INFO sqlalchemy.engine.Engine SELECT count(subscriptions.id) AS count_1 
+FROM subscriptions
+2026-05-07 16:53:48,308 INFO sqlalchemy.engine.Engine [cached since 0.01919s ago] ()
+2026-05-07 16:53:48,309 INFO sqlalchemy.engine.Engine SELECT sum(subscriptions.subscription_amount) AS sum_1 
+FROM subscriptions
+2026-05-07 16:53:48,309 INFO sqlalchemy.engine.Engine [cached since 0.01878s ago] ()
+INFO:     127.0.0.1:58493 - "GET /api/reports/treasury-dashboard?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc3ODE1NDc0OX0.UXBb5CgzM0SFpl2zBqikAM2HWKdaNSKDUgx-qIfwgwY HTTP/1.1" 200 OK
+2026-05-07 16:53:48,311 INFO sqlalchemy.engine.Engine ROLLBACK
