@@ -12,30 +12,30 @@ export default {
         mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
       },
       colors: {
-        // Legacy aliases kept so existing classes don't break
-        primary: '#F59E0B',
-        secondary: '#4F46E5',
+        primary: '#06B6D4',
+        secondary: '#0891B2',
         success: '#059669',
         danger: '#E11D48',
         warning: '#FB923C',
 
-        // Festive palette
+        // Pastel cyan — remapped from saffron so existing classes auto-update
         saffron: {
-          50: '#FFF7ED',
-          100: '#FFEDD5',
-          200: '#FED7AA',
-          300: '#FDBA74',
-          400: '#FB923C',
-          500: '#F59E0B',
-          600: '#D97706',
-          700: '#B45309',
-          800: '#92400E',
-          900: '#78350F',
+          50: '#ECFEFF',
+          100: '#CFFAFE',
+          200: '#A5F3FC',
+          300: '#67E8F9',
+          400: '#22D3EE',
+          500: '#06B6D4',
+          600: '#0891B2',
+          700: '#0E7490',
+          800: '#155E75',
+          900: '#164E63',
         },
+        // Baby yellow accent — remapped from marigold
         marigold: {
-          400: '#FBBF24',
-          500: '#F59E0B',
-          600: '#D97706',
+          400: '#FDE047',
+          500: '#FACC15',
+          600: '#EAB308',
         },
         emeraldx: {
           50: '#ECFDF5',
@@ -60,24 +60,24 @@ export default {
           800: '#292524',
           900: '#1C1917',
         },
-        cream: '#FFFAF1',
+        cream: '#F0FDFF',
       },
       backgroundImage: {
         'festive-hero':
-          'radial-gradient(at 20% 0%, rgba(245,158,11,.18) 0px, transparent 55%), radial-gradient(at 100% 0%, rgba(79,70,229,.14) 0px, transparent 50%), radial-gradient(at 80% 100%, rgba(5,150,105,.14) 0px, transparent 50%)',
+          'radial-gradient(at 20% 0%, rgba(6,182,212,.15) 0px, transparent 55%), radial-gradient(at 100% 0%, rgba(250,204,21,.10) 0px, transparent 50%), radial-gradient(at 80% 100%, rgba(34,211,238,.12) 0px, transparent 50%)',
         'festive-page':
-          'radial-gradient(at 0% 0%, rgba(245,158,11,.08) 0px, transparent 40%), radial-gradient(at 100% 100%, rgba(79,70,229,.06) 0px, transparent 40%)',
-        'saffron-grad': 'linear-gradient(135deg, #F59E0B 0%, #FB923C 50%, #E11D48 100%)',
+          'radial-gradient(at 0% 0%, rgba(6,182,212,.08) 0px, transparent 40%), radial-gradient(at 100% 100%, rgba(250,204,21,.06) 0px, transparent 40%)',
+        'saffron-grad': 'linear-gradient(135deg, #0891B2 0%, #06B6D4 50%, #FACC15 100%)',
         'emerald-grad': 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
         'indigo-grad': 'linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)',
-        'sunrise-grad': 'linear-gradient(135deg, #FFEDD5 0%, #FFF7ED 50%, #ECFDF5 100%)',
+        'sunrise-grad': 'linear-gradient(135deg, #CFFAFE 0%, #ECFEFF 50%, #FEF9C3 100%)',
       },
       boxShadow: {
-        glow: '0 10px 40px -10px rgba(245, 158, 11, 0.45)',
+        glow: '0 10px 40px -10px rgba(6, 182, 212, 0.45)',
         glowEmerald: '0 10px 40px -10px rgba(5, 150, 105, 0.45)',
         glowIndigo: '0 10px 40px -10px rgba(79, 70, 229, 0.45)',
         soft: '0 1px 2px rgba(28, 25, 23, 0.04), 0 8px 24px -8px rgba(28, 25, 23, 0.10)',
-        ringy: '0 0 0 4px rgba(245, 158, 11, 0.18)',
+        ringy: '0 0 0 4px rgba(6, 182, 212, 0.18)',
       },
       borderRadius: {
         '2xl': '1rem',
@@ -102,12 +102,16 @@ export default {
           '100%': { opacity: 1, transform: 'translateY(0)' },
         },
         'soft-pulse': {
-          '0%,100%': { boxShadow: '0 0 0 0 rgba(245, 158, 11, 0.45)' },
-          '50%': { boxShadow: '0 0 0 8px rgba(245, 158, 11, 0)' },
+          '0%,100%': { boxShadow: '0 0 0 0 rgba(6, 182, 212, 0.45)' },
+          '50%': { boxShadow: '0 0 0 8px rgba(6, 182, 212, 0)' },
         },
         spinSlow: {
           '0%': { transform: 'rotate(0deg)' },
           '100%': { transform: 'rotate(360deg)' },
+        },
+        'slide-up': {
+          '0%': { transform: 'translateY(100%)', opacity: 0 },
+          '100%': { transform: 'translateY(0)', opacity: 1 },
         },
       },
       animation: {
@@ -117,6 +121,7 @@ export default {
         'fade-in-up': 'fade-in-up .5s cubic-bezier(.2,.7,.2,1) both',
         'soft-pulse': 'soft-pulse 1.8s ease-out infinite',
         'spin-slow': 'spinSlow 18s linear infinite',
+        'slide-up': 'slide-up 0.3s cubic-bezier(.2,.7,.2,1) both',
       },
     },
   },

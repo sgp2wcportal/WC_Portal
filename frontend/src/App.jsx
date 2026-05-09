@@ -1,4 +1,4 @@
-import React from 'react'
+import { useState } from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Toaster } from 'react-hot-toast'
@@ -6,7 +6,9 @@ import { Toaster } from 'react-hot-toast'
 import { useAuthStore } from './store/authStore'
 import { Header } from './components/Header'
 import { Sidebar } from './components/Sidebar'
+import { BottomNav } from './components/BottomNav'
 import { MarqueeBanner } from './components/MarqueeBanner'
+import { MobileNavDrawer } from './components/MobileNavDrawer'
 import { PrivateRoute, RoleRoute } from './components/PrivateRoute'
 
 import { LoginPage } from './pages/LoginPage'
@@ -83,18 +85,22 @@ const AnimatedRoutes = () => {
 
 function App() {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated())
+  const [navOpen, setNavOpen] = useState(false)
 
   return (
     <Router>
       <div className="flex flex-col min-h-screen">
-        {isAuthenticated && <Header />}
+        {isAuthenticated && <Header onMenuOpen={() => setNavOpen(true)} />}
         {isAuthenticated && <MarqueeBanner />}
         <div className="flex flex-1">
           {isAuthenticated && <Sidebar />}
-          <main className="flex-1 min-w-0">
+          {/* pb-16 reserves space for the bottom nav on mobile */}
+          <main className="flex-1 min-w-0 pb-16 md:pb-0">
             <AnimatedRoutes />
           </main>
         </div>
+        {isAuthenticated && <BottomNav onMenuOpen={() => setNavOpen(true)} />}
+        {isAuthenticated && <MobileNavDrawer open={navOpen} onClose={() => setNavOpen(false)} />}
       </div>
       <Toaster
         position="top-right"
@@ -108,8 +114,8 @@ function App() {
             fontWeight: 500,
             background: 'white',
             color: '#1C1917',
-            border: '1px solid #E7E5E4',
-            boxShadow: '0 20px 60px -25px rgba(28,25,23,.18)',
+            border: '1px solid #CFFAFE',
+            boxShadow: '0 20px 60px -25px rgba(6,182,212,.22)',
           },
           success: {
             iconTheme: { primary: '#059669', secondary: '#ECFDF5' },

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { NavLink } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
@@ -22,16 +22,15 @@ const menuItems = [
   { path: '/events',        label: 'Events Calendar', icon: CalendarRange,   roles: ['admin', 'user', 'generic'] },
   { path: '/subscriptions', label: 'Subscriptions',   icon: CreditCard,      roles: ['admin', 'user', 'generic'] },
   { path: '/donations',     label: 'Donations',       icon: HeartHandshake,  roles: ['admin', 'user', 'generic'] },
-  { path: '/expenses',      label: 'Expenses',        icon: Receipt,         roles: ['admin', 'generic']         },
+  { path: '/expenses',      label: 'Expenses',         icon: Receipt,         roles: ['admin', 'generic']         },
   { path: '/coupons',       label: 'Food Coupons',    icon: UtensilsCrossed, roles: ['admin', 'user', 'generic'] },
-  { path: '/treasury',      label: 'Treasury',        icon: PieChart,        roles: ['admin', 'generic']         },
+  { path: '/treasury',      label: 'Treasury',         icon: PieChart,        roles: ['admin', 'generic']         },
 ]
 
 export const MobileNavDrawer = ({ open, onClose }) => {
   const role = useAuthStore((s) => s.role)
   const items = menuItems.filter((m) => m.roles.includes(role))
 
-  // Close on Escape
   useEffect(() => {
     if (!open) return
     const onKey = (e) => { if (e.key === 'Escape') onClose() }
@@ -57,9 +56,9 @@ export const MobileNavDrawer = ({ open, onClose }) => {
             animate={{ x: 0 }}
             exit={{ x: -320 }}
             transition={{ duration: 0.25, ease: [0.2, 0.7, 0.2, 1] }}
-            className="fixed left-0 top-0 bottom-0 w-72 bg-white z-50 shadow-[0_30px_80px_-25px_rgba(28,25,23,0.4)] flex flex-col"
+            className="fixed left-0 top-0 bottom-0 w-72 bg-white z-50 shadow-[0_30px_80px_-25px_rgba(6,182,212,0.35)] flex flex-col"
           >
-            <div className="px-4 py-4 flex items-center justify-between border-b border-ink-100">
+            <div className="px-4 py-4 flex items-center justify-between border-b border-saffron-100">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-xl bg-saffron-grad shadow-glow flex items-center justify-center text-white">
                   <Sparkles className="w-4 h-4" strokeWidth={2.5} />
@@ -68,7 +67,7 @@ export const MobileNavDrawer = ({ open, onClose }) => {
                   <p className="font-display font-semibold text-ink-900 text-sm tracking-tight">
                     Siddha Galaxia
                   </p>
-                  <p className="text-[10px] uppercase tracking-[0.18em] text-ink-400 font-medium">
+                  <p className="text-[10px] uppercase tracking-[0.18em] text-saffron-500 font-medium">
                     Welfare Portal
                   </p>
                 </div>
@@ -76,14 +75,14 @@ export const MobileNavDrawer = ({ open, onClose }) => {
               <button
                 onClick={onClose}
                 aria-label="Close menu"
-                className="w-8 h-8 rounded-full hover:bg-ink-100 flex items-center justify-center text-ink-500"
+                className="w-8 h-8 rounded-full hover:bg-saffron-50 flex items-center justify-center text-ink-500 transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
             <nav className="flex-1 overflow-y-auto p-3 space-y-1">
-              <p className="px-3 pb-2 text-[10px] uppercase tracking-[0.18em] text-ink-400 font-semibold">
+              <p className="px-3 pb-2 text-[10px] uppercase tracking-[0.18em] text-saffron-500 font-semibold">
                 Menu
               </p>
               {items.map((item) => {
@@ -107,6 +106,9 @@ export const MobileNavDrawer = ({ open, onClose }) => {
                 )
               })}
             </nav>
+
+            {/* Bottom accent strip */}
+            <div className="h-1 bg-saffron-grad" />
           </motion.aside>
         </>
       )}
