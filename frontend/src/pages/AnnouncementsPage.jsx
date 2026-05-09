@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import toast from 'react-hot-toast'
-import { Megaphone, Plus, Trash2, Calendar, X, Sparkles } from 'lucide-react'
+import { Megaphone, Plus, Trash2, Calendar, X, Sparkles, ImagePlus, Image as ImageIcon } from 'lucide-react'
 
 import { announcementService } from '../services/announcementService'
+import { storageUrl } from '../services/couponService'
 import { useAuthStore } from '../store/authStore'
 
 const fmtDate = (raw, withTime = true) => {
@@ -20,7 +21,10 @@ export const AnnouncementsPage = () => {
   const role = useAuthStore((state) => state.role)
   const [showForm, setShowForm] = useState(false)
   const [formData, setFormData] = useState({ title: '', content: '', visible_until: '' })
+  const [pendingImage, setPendingImage] = useState(null)
+  const [imagePreview, setImagePreview] = useState(null)
   const [submitting, setSubmitting] = useState(false)
+  const fileRef = useRef(null)
 
   useEffect(() => { fetchAnnouncements() }, [])
 
@@ -46,8 +50,17 @@ export const AnnouncementsPage = () => {
           ? new Date(formData.visible_until + 'T23:59:59').toISOString()
           : null,
       }
-      await announcementService.createAnnouncement(payload)
+      const res = await announcementService.createAnnouncement(payload)
+      if (pendingImage) {
+        try {
+          await announcementService.uploadImage(res.data.id, pendingImage)
+        } catch {
+          toast.error('Announcement created but image upload failed')
+        }
+      }
       setFormData({ title: '', content: '', visible_until: '' })
+      setPendingImage(null)
+      setImagePreview(null)
       setShowForm(false)
       toast.success('Announcement posted!')
       fetchAnnouncements()
@@ -56,6 +69,13 @@ export const AnnouncementsPage = () => {
     } finally {
       setSubmitting(false)
     }
+  }
+
+  const handleImagePick = (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setPendingImage(file)
+    setImagePreview(URL.createObjectURL(file))
   }
 
   const handleDeleteAnnouncement = async (id) => {
@@ -174,12 +194,44 @@ export const AnnouncementsPage = () => {
                     Leave blank to keep visible indefinitely.
                   </p>
                 </div>
+                <div>
+                  <label className="block text-xs font-semibold text-ink-700 uppercase tracking-wider mb-1.5">
+                    Banner Image <span className="text-ink-400 normal-case font-normal">(optional)</span>
+                  </label>
+                  <input
+                    ref={fileRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImagePick}
+                    className="hidden"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => fileRef.current?.click()}
+                    className="btn btn-secondary gap-2"
+                  >
+                    <ImagePlus className="w-4 h-4" />
+                    {pendingImage ? pendingImage.name : 'Choose image'}
+                  </button>
+                  {imagePreview && (
+                    <div className="mt-2 relative inline-block">
+                      <img src={imagePreview} alt="preview" className="h-28 rounded-xl object-cover border border-ink-100" />
+                      <button
+                        type="button"
+                        onClick={() => { setPendingImage(null); setImagePreview(null) }}
+                        className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-rose-500 text-white flex items-center justify-center text-xs"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  )}
+                </div>
                 <div className="flex gap-3 pt-2">
                   <button type="submit" disabled={submitting} className="btn btn-primary">
                     <Sparkles className="w-4 h-4" />
                     {submitting ? 'Posting…' : 'Post announcement'}
                   </button>
-                  <button type="button" onClick={() => setShowForm(false)} className="btn btn-secondary">
+                  <button type="button" onClick={() => { setShowForm(false); setPendingImage(null); setImagePreview(null) }} className="btn btn-secondary">
                     Cancel
                   </button>
                 </div>
@@ -211,9 +263,17 @@ export const AnnouncementsPage = () => {
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.04 * idx }}
-              className="card-elevated relative overflow-hidden group"
+              className="card-elevated relative overflow-hidden group p-0"
             >
-              <div className="absolute left-0 top-0 bottom-0 w-1 bg-saffron-grad" />
+              <div className="absolute left-0 top-0 bottom-0 w-1 bg-saffron-grad z-10" />
+              {storageUrl(a.image) ? (
+                <img
+                  src={storageUrl(a.image)}
+                  alt={a.title}
+                  className="w-full h-44 object-cover"
+                />
+              ) : null}
+              <div className="p-6">
               <div className="flex justify-between items-start gap-4">
                 <h3 className="font-display text-xl font-semibold text-ink-900 pr-6 leading-snug">
                   {a.title}
@@ -244,6 +304,7 @@ export const AnnouncementsPage = () => {
                     Visible until {fmtDate(a.visible_until, false)}
                   </span>
                 )}
+              </div>
               </div>
             </motion.div>
           ))}

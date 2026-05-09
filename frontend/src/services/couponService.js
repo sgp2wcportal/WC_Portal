@@ -7,8 +7,14 @@ export const BACKEND_ORIGIN = import.meta.env.VITE_BACKEND_ORIGIN ?? ''
 export const storageUrl = (path) => {
   if (!path) return null
   if (/^https?:\/\//i.test(path)) return path
-  const norm = String(path).replace(/\\/g, '/').replace(/^(\.\.?\/)*/, '')
-  const stripped = norm.replace(/^storage\//, '')
+  const norm = String(path).replace(/\\/g, '/')
+  // Handle absolute system paths that contain /storage/ (e.g. /data/storage/event_images/...)
+  const marker = '/storage/'
+  const markerIdx = norm.indexOf(marker)
+  if (markerIdx !== -1) {
+    return `${BACKEND_ORIGIN}/storage/${norm.slice(markerIdx + marker.length)}`
+  }
+  const stripped = norm.replace(/^(\.\.?\/)*/, '').replace(/^storage\//, '')
   return `${BACKEND_ORIGIN}/storage/${stripped}`
 }
 

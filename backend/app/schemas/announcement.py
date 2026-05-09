@@ -18,6 +18,7 @@ class AnnouncementResponse(BaseModel):
     content: str
     created_by: str
     is_active: bool
+    image: str | None = None
     visible_until: datetime | None = None
     created_at: datetime
     updated_at: datetime | None = None

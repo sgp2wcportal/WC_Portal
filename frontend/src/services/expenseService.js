@@ -34,4 +34,6 @@ export const expenseService = {
   renameOccasion:  (id, name) => api.patch(`/expenses/occasions/${id}`, { name }),
 
   exportExcel: () => api.get('/expenses/export.xlsx', { responseType: 'blob' }),
+
+  deleteExpense: (id) => api.delete(`/expenses/${id}`),
 }

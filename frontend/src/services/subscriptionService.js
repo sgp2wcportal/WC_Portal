@@ -12,4 +12,6 @@ export const subscriptionService = {
   verify: (id, verified = true) => api.patch(`/subscriptions/${id}/verify`, { verified }),
 
   exportExcel: () => api.get('/subscriptions/export.xlsx', { responseType: 'blob' }),
+
+  deleteSubscription: (id) => api.delete(`/subscriptions/${id}`),
 }

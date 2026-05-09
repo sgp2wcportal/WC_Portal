@@ -141,10 +141,16 @@ class EventDashboardTotals(BaseModel):
     pax: int
     veg: int
     nonveg: int
+    veg_kid: int = 0
+    nonveg_kid: int = 0
     veg_used: int
     nonveg_used: int
+    veg_kid_used: int = 0
+    nonveg_kid_used: int = 0
     veg_remaining: int
     nonveg_remaining: int
+    veg_kid_remaining: int = 0
+    nonveg_kid_remaining: int = 0
     total_amount: float
 
 

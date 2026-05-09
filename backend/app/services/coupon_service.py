@@ -421,14 +421,23 @@ def get_event_dashboard(db: Session, event_name: str) -> dict:
     bookings = get_coupons_by_event(db, event_name)
     veg_total = sum(b.veg_count for b in bookings)
     nonveg_total = sum(b.nonveg_count for b in bookings)
-    veg_used = nonveg_used = 0
+    veg_kid_total = sum(b.veg_kid_count or 0 for b in bookings)
+    nonveg_kid_total = sum(b.nonveg_kid_count or 0 for b in bookings)
+    veg_used = nonveg_used = veg_kid_used = nonveg_kid_used = 0
     for b in bookings:
         for t in b.tickets:
             if t.is_used:
+                is_kid = getattr(t, "is_kid", False)
                 if t.ticket_type == "veg":
-                    veg_used += 1
+                    if is_kid:
+                        veg_kid_used += 1
+                    else:
+                        veg_used += 1
                 else:
-                    nonveg_used += 1
+                    if is_kid:
+                        nonveg_kid_used += 1
+                    else:
+                        nonveg_used += 1
     return {
         "event_name": event_name,
         "totals": {
@@ -436,10 +445,16 @@ def get_event_dashboard(db: Session, event_name: str) -> dict:
             "pax": sum(b.pax for b in bookings),
             "veg": veg_total,
             "nonveg": nonveg_total,
+            "veg_kid": veg_kid_total,
+            "nonveg_kid": nonveg_kid_total,
             "veg_used": veg_used,
             "nonveg_used": nonveg_used,
+            "veg_kid_used": veg_kid_used,
+            "nonveg_kid_used": nonveg_kid_used,
             "veg_remaining": veg_total - veg_used,
             "nonveg_remaining": nonveg_total - nonveg_used,
+            "veg_kid_remaining": veg_kid_total - veg_kid_used,
+            "nonveg_kid_remaining": nonveg_kid_total - nonveg_kid_used,
             "total_amount": sum(b.total_amount for b in bookings),
         },
         "bookings": bookings,

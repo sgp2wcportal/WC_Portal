@@ -1,11 +1,23 @@
-import React, { useState, useEffect } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import {
   BarChart, Bar, PieChart, Pie, LineChart, Line,
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell
 } from 'recharts'
+import { Download } from 'lucide-react'
 import { reportService } from '../services/reportService'
 
+const PRINT_STYLES = `
+@media print {
+  body * { visibility: hidden !important; }
+  #treasury-print-area, #treasury-print-area * { visibility: visible !important; }
+  #treasury-print-area { position: absolute; inset: 0; padding: 24px; }
+  .no-print { display: none !important; }
+  @page { margin: 15mm; size: A4 portrait; }
+}
+`
+
 export const TreasuryPage = () => {
+  const printRef = useRef(null)
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -13,6 +25,16 @@ export const TreasuryPage = () => {
   useEffect(() => {
     fetchTreasuryData()
   }, [])
+
+  const handlePrint = () => {
+    const style = document.createElement('style')
+    style.id = '__treasury_print_style__'
+    style.textContent = PRINT_STYLES
+    if (!document.getElementById('__treasury_print_style__')) {
+      document.head.appendChild(style)
+    }
+    window.print()
+  }
 
   const fetchTreasuryData = async () => {
     try {
@@ -35,8 +57,17 @@ export const TreasuryPage = () => {
   const donationByType = data.donations?.by_type || []
 
   return (
-    <div className="p-8">
-      <h1 className="text-3xl font-bold mb-8">Treasury Analytics Dashboard</h1>
+    <div className="p-8" id="treasury-print-area" ref={printRef}>
+      <div className="flex items-center justify-between mb-8">
+        <h1 className="text-3xl font-bold">Treasury Analytics Dashboard</h1>
+        <button
+          onClick={handlePrint}
+          className="no-print btn btn-secondary flex items-center gap-2"
+        >
+          <Download className="w-4 h-4" />
+          Download PDF
+        </button>
+      </div>
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">

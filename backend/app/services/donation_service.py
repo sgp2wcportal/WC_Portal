@@ -66,6 +66,15 @@ def get_donation_by_id(db: Session, donation_id: str):
     return db.query(Donation).filter(Donation.id == donation_id).first()
 
 
+def delete_donation(db: Session, donation_id: str) -> bool:
+    don = get_donation_by_id(db, donation_id)
+    if not don:
+        return False
+    db.delete(don)
+    db.commit()
+    return True
+
+
 def set_donation_verified(db: Session, donation_id: str, *, verified: bool, actor: str):
     donation = get_donation_by_id(db, donation_id)
     if not donation:

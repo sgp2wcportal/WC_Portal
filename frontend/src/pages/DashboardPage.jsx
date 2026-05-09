@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import {
   Megaphone,
   CreditCard,
@@ -11,10 +11,14 @@ import {
   ArrowUpRight,
   Sparkles,
   CalendarRange,
+  AlertTriangle,
+  Trash2,
 } from 'lucide-react'
+import toast from 'react-hot-toast'
 
 import { useAuthStore } from '../store/authStore'
 import { authService } from '../services/authService'
+import api from '../services/api'
 
 const tiles = [
   {
@@ -120,6 +124,23 @@ const TileCard = ({ tile, index }) => {
 export const DashboardPage = () => {
   const { username, role } = useAuthStore()
   const [displayName, setDisplayName] = useState(() => localStorage.getItem('display_name') || '')
+  const [showResetModal, setShowResetModal] = useState(false)
+  const [resetConfirm, setResetConfirm] = useState('')
+  const [resetting, setResetting] = useState(false)
+
+  const handleMasterReset = async () => {
+    setResetting(true)
+    try {
+      await api.post('/admin/reset-all')
+      toast.success('All transaction records deleted.')
+      setShowResetModal(false)
+      setResetConfirm('')
+    } catch {
+      toast.error('Reset failed. Please try again.')
+    } finally {
+      setResetting(false)
+    }
+  }
 
   useEffect(() => {
     let cancelled = false
@@ -192,6 +213,102 @@ export const DashboardPage = () => {
           <TileCard key={tile.path} tile={tile} index={idx} />
         ))}
       </div>
+
+      {role === 'admin' && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4 }}
+          className="mt-12 border border-rose-200 rounded-2xl p-6 bg-rose-50/50"
+        >
+          <div className="flex items-center gap-3 mb-2">
+            <AlertTriangle className="w-5 h-5 text-rose-600 shrink-0" />
+            <h2 className="font-display text-lg font-semibold text-rose-800">Danger Zone</h2>
+          </div>
+          <p className="text-sm text-rose-700 mb-4">
+            Master reset permanently deletes <strong>all</strong> subscriptions, donations, expenses, and food coupon records.
+            Use this only to wipe test data before going live.
+          </p>
+          <button
+            onClick={() => { setShowResetModal(true); setResetConfirm('') }}
+            className="btn bg-rose-600 hover:bg-rose-700 text-white border-rose-700 gap-2"
+          >
+            <Trash2 className="w-4 h-4" />
+            Master Reset
+          </button>
+        </motion.div>
+      )}
+
+      <AnimatePresence>
+        {showResetModal && (
+          <motion.div
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 modal-scrim"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowResetModal(false)}
+          >
+            <motion.div
+              onClick={(e) => e.stopPropagation()}
+              initial={{ opacity: 0, scale: 0.95, y: 12 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.97, y: 8 }}
+              transition={{ duration: 0.22, ease: [0.2, 0.7, 0.2, 1] }}
+              className="bg-white rounded-2xl shadow-[0_30px_80px_-25px_rgba(28,25,23,0.4)] border border-rose-200 max-w-md w-full p-6 space-y-4"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-11 h-11 rounded-xl bg-rose-100 flex items-center justify-center shrink-0">
+                  <AlertTriangle className="w-6 h-6 text-rose-600" />
+                </div>
+                <div>
+                  <h3 className="font-display text-xl font-semibold text-rose-900">Master Reset</h3>
+                  <p className="text-sm text-rose-600">This action cannot be undone.</p>
+                </div>
+              </div>
+
+              <p className="text-sm text-ink-700">
+                This will permanently delete <strong>all</strong> records for:
+              </p>
+              <ul className="text-sm text-ink-700 list-disc list-inside space-y-1 pl-1">
+                <li>Subscriptions</li>
+                <li>Donations</li>
+                <li>Expenses</li>
+                <li>Food Coupons &amp; Tickets</li>
+              </ul>
+
+              <div>
+                <label className="block text-xs font-semibold text-ink-700 uppercase tracking-wider mb-1.5">
+                  Type <span className="font-mono text-rose-600">RESET</span> to confirm
+                </label>
+                <input
+                  className="input-field"
+                  value={resetConfirm}
+                  onChange={(e) => setResetConfirm(e.target.value)}
+                  placeholder="RESET"
+                  autoFocus
+                />
+              </div>
+
+              <div className="flex gap-3 pt-1">
+                <button
+                  onClick={handleMasterReset}
+                  disabled={resetConfirm !== 'RESET' || resetting}
+                  className="btn bg-rose-600 hover:bg-rose-700 text-white border-rose-700 flex-1 disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  {resetting ? 'Deleting…' : 'Delete everything'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowResetModal(false)}
+                  className="btn btn-secondary"
+                >
+                  Cancel
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }

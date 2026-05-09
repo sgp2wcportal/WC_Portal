@@ -12,4 +12,6 @@ export const donationService = {
   verify: (id, verified = true) => api.patch(`/donations/${id}/verify`, { verified }),
 
   exportExcel: () => api.get('/donations/export.xlsx', { responseType: 'blob' }),
+
+  deleteDonation: (id) => api.delete(`/donations/${id}`),
 }

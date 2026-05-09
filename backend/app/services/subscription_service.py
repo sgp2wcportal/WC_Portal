@@ -6,6 +6,15 @@ from app.models.subscription import Subscription
 import uuid
 
 
+def delete_subscription(db: Session, subscription_id: str) -> bool:
+    sub = get_subscription_by_id(db, subscription_id)
+    if not sub:
+        return False
+    db.delete(sub)
+    db.commit()
+    return True
+
+
 def create_subscription(
     db: Session,
     *,

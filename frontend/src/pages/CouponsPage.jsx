@@ -942,21 +942,37 @@ const EventDashboardView = ({ menus, onError, onInfo }) => {
       </div>
 
       {t && (
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <Stat label="Bookings" value={t.bookings} />
           <Stat label="Total pax" value={t.pax} />
           <Stat
-            label="Veg"
+            label="Veg (Adult)"
             value={`${t.veg_used} / ${t.veg}`}
             sub={`${t.veg_remaining} left`}
             tone="green"
           />
           <Stat
-            label="Non-Veg"
+            label="Non-Veg (Adult)"
             value={`${t.nonveg_used} / ${t.nonveg}`}
             sub={`${t.nonveg_remaining} left`}
             tone="amber"
           />
+          {(t.veg_kid > 0 || t.veg_kid_used > 0) && (
+            <Stat
+              label="Veg (Kid)"
+              value={`${t.veg_kid_used} / ${t.veg_kid}`}
+              sub={`${t.veg_kid_remaining} left`}
+              tone="green"
+            />
+          )}
+          {(t.nonveg_kid > 0 || t.nonveg_kid_used > 0) && (
+            <Stat
+              label="Non-Veg (Kid)"
+              value={`${t.nonveg_kid_used} / ${t.nonveg_kid}`}
+              sub={`${t.nonveg_kid_remaining} left`}
+              tone="amber"
+            />
+          )}
           <Stat label="Total collected" value={fmtINR(t.total_amount)} tone="blue" />
         </div>
       )}
@@ -972,6 +988,8 @@ const EventDashboardView = ({ menus, onError, onInfo }) => {
                 <Th label="Pax" k="pax" sortKey={sortKey} sortDir={sortDir} onClick={() => toggleSort('pax')} />
                 <Th label="Veg" k="veg_count" sortKey={sortKey} sortDir={sortDir} onClick={() => toggleSort('veg_count')} />
                 <Th label="Non-Veg" k="nonveg_count" sortKey={sortKey} sortDir={sortDir} onClick={() => toggleSort('nonveg_count')} />
+                <Th label="Veg (Kid)" k="veg_kid_count" sortKey={sortKey} sortDir={sortDir} onClick={() => toggleSort('veg_kid_count')} />
+                <Th label="Non-Veg (Kid)" k="nonveg_kid_count" sortKey={sortKey} sortDir={sortDir} onClick={() => toggleSort('nonveg_kid_count')} />
                 <Th label="Used" k="used" sortKey={sortKey} sortDir={sortDir} onClick={() => toggleSort('used')} />
                 <Th label="Total" k="total_amount" sortKey={sortKey} sortDir={sortDir} onClick={() => toggleSort('total_amount')} />
                 <Th label="Txn ID" k="txn_reference" sortKey={sortKey} sortDir={sortDir} onClick={() => toggleSort('txn_reference')} />
@@ -983,7 +1001,7 @@ const EventDashboardView = ({ menus, onError, onInfo }) => {
             </thead>
             <tbody>
               {sortedRows.length === 0 && (
-                <tr><td colSpan="13" className="px-3 py-8 text-center muted">No bookings yet for this event.</td></tr>
+                <tr><td colSpan="15" className="px-3 py-8 text-center muted">No bookings yet for this event.</td></tr>
               )}
               {sortedRows.map((r) => (
                 <tr key={r.id} className="border-b border-gray-100 hover:bg-gray-50">
@@ -993,6 +1011,8 @@ const EventDashboardView = ({ menus, onError, onInfo }) => {
                   <td className="px-3 py-2">{r.pax}</td>
                   <td className="px-3 py-2">{r.veg_count}</td>
                   <td className="px-3 py-2">{r.nonveg_count}</td>
+                  <td className="px-3 py-2">{r.veg_kid_count || 0}</td>
+                  <td className="px-3 py-2">{r.nonveg_kid_count || 0}</td>
                   <td className="px-3 py-2">
                     <span className={`badge ${r.used === r.tickets.length ? 'badge-green' : r.used > 0 ? 'badge-amber' : 'badge-blue'}`}>
                       {r.used}/{r.tickets.length}
@@ -1072,13 +1092,17 @@ const BookingEditModal = ({ booking, onClose, onSaved, onError }) => {
     pax: booking.pax,
     veg_count: booking.veg_count,
     nonveg_count: booking.nonveg_count,
+    veg_kid_count: booking.veg_kid_count || 0,
+    nonveg_kid_count: booking.nonveg_kid_count || 0,
     txn_reference: booking.txn_reference || '',
     payer_upi_id: booking.payer_upi_id || '',
     payment_verified: !!booking.payment_verified,
   })
   const [busy, setBusy] = useState(false)
-  const usedVeg = booking.tickets.filter((t) => t.ticket_type === 'veg' && t.is_used).length
-  const usedNon = booking.tickets.filter((t) => t.ticket_type === 'nonveg' && t.is_used).length
+  const usedVeg = booking.tickets.filter((t) => t.ticket_type === 'veg' && !t.is_kid && t.is_used).length
+  const usedNon = booking.tickets.filter((t) => t.ticket_type === 'nonveg' && !t.is_kid && t.is_used).length
+  const usedVegKid = booking.tickets.filter((t) => t.ticket_type === 'veg' && t.is_kid && t.is_used).length
+  const usedNonKid = booking.tickets.filter((t) => t.ticket_type === 'nonveg' && t.is_kid && t.is_used).length
 
   const submit = async (e) => {
     e.preventDefault()
@@ -1090,6 +1114,8 @@ const BookingEditModal = ({ booking, onClose, onSaved, onError }) => {
         pax: Number(form.pax),
         veg_count: Number(form.veg_count),
         nonveg_count: Number(form.nonveg_count),
+        veg_kid_count: Number(form.veg_kid_count),
+        nonveg_kid_count: Number(form.nonveg_kid_count),
         txn_reference: form.txn_reference.trim(),
         payer_upi_id: form.payer_upi_id.trim() || null,
         payment_verified: form.payment_verified,
@@ -1141,25 +1167,37 @@ const BookingEditModal = ({ booking, onClose, onSaved, onError }) => {
               onChange={(e) => setForm({ ...form, pax: parseInt(e.target.value) || 0 })} />
           </Field>
           <div className="grid grid-cols-2 gap-3">
-            <Field label="Veg">
+            <Field label="Veg (Adult)">
               <input type="number" min={usedVeg} className="input-field" value={form.veg_count}
                 onChange={(e) => setForm({ ...form, veg_count: parseInt(e.target.value) || 0 })} />
             </Field>
-            <Field label="Non-Veg">
+            <Field label="Non-Veg (Adult)">
               <input type="number" min={usedNon} className="input-field" value={form.nonveg_count}
                 onChange={(e) => setForm({ ...form, nonveg_count: parseInt(e.target.value) || 0 })} />
             </Field>
           </div>
+          <div className="grid grid-cols-2 gap-3">
+            <Field label="Veg (Kid)">
+              <input type="number" min={usedVegKid} className="input-field" value={form.veg_kid_count}
+                onChange={(e) => setForm({ ...form, veg_kid_count: parseInt(e.target.value) || 0 })} />
+            </Field>
+            <Field label="Non-Veg (Kid)">
+              <input type="number" min={usedNonKid} className="input-field" value={form.nonveg_kid_count}
+                onChange={(e) => setForm({ ...form, nonveg_kid_count: parseInt(e.target.value) || 0 })} />
+            </Field>
+          </div>
         </div>
 
-        {(usedVeg + usedNon) > 0 && (
+        {(usedVeg + usedNon + usedVegKid + usedNonKid) > 0 && (
           <p className="muted">
-            Already used: {usedVeg} veg, {usedNon} non-veg. Counts cannot drop below those.
+            Already used: {usedVeg} veg, {usedNon} non-veg
+            {(usedVegKid + usedNonKid) > 0 && `, ${usedVegKid} veg kid, ${usedNonKid} non-veg kid`}.
+            Counts cannot drop below those.
           </p>
         )}
-        {form.pax !== Number(form.veg_count) + Number(form.nonveg_count) && (
+        {form.pax !== Number(form.veg_count) + Number(form.nonveg_count) + Number(form.veg_kid_count) + Number(form.nonveg_kid_count) && (
           <p className="text-amber-600 text-sm">
-            Pax must equal veg + non-veg ({Number(form.veg_count) + Number(form.nonveg_count)}).
+            Pax must equal all meals combined ({Number(form.veg_count) + Number(form.nonveg_count) + Number(form.veg_kid_count) + Number(form.nonveg_kid_count)}).
           </p>
         )}
 

@@ -9,6 +9,7 @@ from app.database import get_db
 from app.schemas.subscription import SubscriptionCreate, SubscriptionResponse
 from app.services.subscription_service import (
     create_subscription,
+    delete_subscription,
     get_subscription_analytics,
     get_subscription_by_id,
     get_subscriptions,
@@ -120,6 +121,18 @@ async def get_subscription(subscription_id: str, db: Session = Depends(get_db)):
     if not subscription:
         raise HTTPException(status_code=404, detail="Subscription not found")
     return subscription
+
+
+@router.delete("/{subscription_id}")
+async def delete_subscription_record(
+    subscription_id: str,
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user),
+):
+    _require_admin_or_generic(current_user)
+    if not delete_subscription(db, subscription_id):
+        raise HTTPException(status_code=404, detail="Subscription not found")
+    return {"message": "Deleted"}
 
 
 @router.patch("/{subscription_id}/verify", response_model=SubscriptionResponse)

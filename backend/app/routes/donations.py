@@ -9,6 +9,7 @@ from app.database import get_db
 from app.schemas.donation import DonationCreate, DonationResponse
 from app.services.donation_service import (
     create_donation,
+    delete_donation,
     get_donation_analytics,
     get_donation_by_id,
     get_donations,
@@ -114,6 +115,18 @@ async def get_donation(donation_id: str, db: Session = Depends(get_db)):
     if not donation:
         raise HTTPException(status_code=404, detail="Donation not found")
     return donation
+
+
+@router.delete("/{donation_id}")
+async def delete_donation_record(
+    donation_id: str,
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user),
+):
+    _require_admin_or_generic(current_user)
+    if not delete_donation(db, donation_id):
+        raise HTTPException(status_code=404, detail="Donation not found")
+    return {"message": "Deleted"}
 
 
 @router.patch("/{donation_id}/verify", response_model=DonationResponse)

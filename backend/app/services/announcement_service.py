@@ -56,6 +56,16 @@ def update_announcement(db: Session, announcement_id: str, title: str = None, co
     db.refresh(announcement)
     return announcement
 
+def set_announcement_image(db: Session, announcement_id: str, image_path: str):
+    ann = get_announcement_by_id(db, announcement_id)
+    if not ann:
+        return None
+    ann.image = image_path
+    db.commit()
+    db.refresh(ann)
+    return ann
+
+
 def delete_announcement(db: Session, announcement_id: str):
     announcement = get_announcement_by_id(db, announcement_id)
     if announcement:

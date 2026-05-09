@@ -267,3 +267,15 @@ async def get_expense(expense_id: str, db: Session = Depends(get_db)):
     if not expense:
         raise HTTPException(status_code=404, detail="Expense not found")
     return expense
+
+
+@router.delete("/{expense_id}")
+async def delete_expense_record(
+    expense_id: str,
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user),
+):
+    _require_admin_or_generic(current_user)
+    if not delete_expense(db, expense_id):
+        raise HTTPException(status_code=404, detail="Expense not found")
+    return {"message": "Deleted"}

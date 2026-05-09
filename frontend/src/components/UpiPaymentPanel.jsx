@@ -69,8 +69,8 @@ export const UpiPaymentPanel = ({ amount, note, title = 'Pay via UPI', subtitle 
             </button>
           </div>
           <div className="flex justify-between">
-            <span className="text-ink-500">Payee</span>
-            <span className="text-ink-900">{info?.upi_name || '—'}</span>
+            <span className="text-ink-500">Committee</span>
+            <span className="text-ink-900 font-medium">Welfare Committee@SGP2</span>
           </div>
           {amount > 0 && (
             <div className="flex justify-between">

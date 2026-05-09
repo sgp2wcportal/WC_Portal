@@ -10,6 +10,7 @@ class Announcement(Base):
     content = Column(Text)
     created_by = Column(String)
     is_active = Column(Boolean, default=True)
+    image = Column(String, nullable=True)
     visible_until = Column(DateTime(timezone=True), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())

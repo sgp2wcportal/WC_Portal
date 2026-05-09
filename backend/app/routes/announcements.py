@@ -1,11 +1,16 @@
-from fastapi import APIRouter, Depends, HTTPException
+import os
+
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from sqlalchemy.orm import Session
+
+from app.config import settings
 from app.database import get_db
 from app.schemas.announcement import AnnouncementCreate, AnnouncementUpdate, AnnouncementResponse
 from app.services.announcement_service import (
     create_announcement, get_announcements, get_announcement_by_id,
-    update_announcement, delete_announcement
+    set_announcement_image, update_announcement, delete_announcement,
 )
+from app.utils.file_handler import save_upload_file
 from app.utils.jwt_handler import get_current_user
 
 router = APIRouter(prefix="/api/announcements", tags=["announcements"])
@@ -82,3 +87,22 @@ async def delete_existing_announcement(
         raise HTTPException(status_code=404, detail="Announcement not found")
 
     return {"message": "Announcement deleted successfully"}
+
+
+@router.post("/{announcement_id}/image", response_model=AnnouncementResponse)
+async def upload_announcement_image(
+    announcement_id: str,
+    image: UploadFile = File(...),
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user),
+):
+    """Upload or replace the banner image for an announcement (Admin only)."""
+    if current_user.get("role") != "admin":
+        raise HTTPException(status_code=403, detail="Only admins can upload announcement images")
+    ann = get_announcement_by_id(db, announcement_id)
+    if not ann:
+        raise HTTPException(status_code=404, detail="Announcement not found")
+    content = await image.read()
+    folder = os.path.join(settings.UPLOAD_FOLDER, "announcement_images")
+    saved = save_upload_file(content, folder=folder, original_filename=image.filename)
+    return set_announcement_image(db, announcement_id, saved)

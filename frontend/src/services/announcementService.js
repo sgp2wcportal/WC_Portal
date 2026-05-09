@@ -9,5 +9,13 @@ export const announcementService = {
   
   updateAnnouncement: (id, announcement) => api.put(`/announcements/${id}`, announcement),
   
-  deleteAnnouncement: (id) => api.delete(`/announcements/${id}`)
+  deleteAnnouncement: (id) => api.delete(`/announcements/${id}`),
+
+  uploadImage: (id, file) => {
+    const form = new FormData()
+    form.append('image', file)
+    return api.post(`/announcements/${id}/image`, form, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    })
+  },
 }

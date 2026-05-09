@@ -80,9 +80,9 @@ export const LoginPage = () => {
               ✦ Welfare Committee 2026-27
             </p>
             <h1 className="font-display text-5xl xl:text-6xl font-semibold text-ink-900 leading-[1.05] tracking-tight text-balance">
-              Your community,{' '}
-              <span className="gradient-text italic">beautifully</span>{' '}
-              organised.
+              One platform.{' '}
+              <span className="gradient-text italic">Every</span>{' '}
+              community service.
             </h1>
             <p className="mt-6 text-lg text-ink-600 max-w-md text-balance">
               Connecting residents through one unified platform for celebrations,
@@ -133,7 +133,7 @@ export const LoginPage = () => {
                   Sign in
                 </p>
                 <h2 className="font-display text-3xl font-semibold text-ink-900 tracking-tight">
-                  Namaste 🪔
+                  Bienvenue
                 </h2>
                 <p className="text-ink-600 mt-2 text-sm">
                   Welcome back to your community portal.

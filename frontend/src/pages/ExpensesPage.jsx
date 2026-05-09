@@ -16,6 +16,7 @@ import {
   Tag,
   CalendarDays,
   Paperclip,
+  Trash2,
 } from 'lucide-react'
 
 import { expenseService } from '../services/expenseService'
@@ -131,6 +132,30 @@ export const ExpensesPage = () => {
     } finally {
       setSubmitting(false)
     }
+  }
+
+  const handleDelete = (exp) => {
+    toast(
+      (t) => (
+        <div className="flex flex-col gap-2 min-w-[240px]">
+          <p className="font-semibold text-ink-900">Delete this expense?</p>
+          <p className="text-xs text-ink-600">{exp.category} — ₹{exp.amount}</p>
+          <p className="text-xs text-rose-600 font-medium">This cannot be undone.</p>
+          <div className="flex gap-2 mt-1">
+            <button className="btn btn-danger flex-1 py-1.5 text-xs" onClick={async () => {
+              toast.dismiss(t.id)
+              try {
+                await expenseService.deleteExpense(exp.id)
+                setExpenses((prev) => prev.filter((e) => e.id !== exp.id))
+                toast.success('Deleted')
+              } catch { toast.error('Failed to delete') }
+            }}>Delete</button>
+            <button className="btn btn-secondary flex-1 py-1.5 text-xs" onClick={() => toast.dismiss(t.id)}>Cancel</button>
+          </div>
+        </div>
+      ),
+      { duration: 8000 },
+    )
   }
 
   const handleDownload = async () => {
@@ -442,6 +467,7 @@ export const ExpensesPage = () => {
                 <Th label="Amount"      k="amount"       sortKey={sortKey} sortDir={sortDir} onClick={() => toggleSort('amount')} />
                 <th className="px-4 py-3 font-semibold whitespace-nowrap">Receipt</th>
                 <Th label="Recorded"    k="created_at"   sortKey={sortKey} sortDir={sortDir} onClick={() => toggleSort('created_at')} />
+                {isAdmin && <th className="px-4 py-3 text-right font-semibold">Action</th>}
               </tr>
             </thead>
             <tbody>
@@ -484,6 +510,17 @@ export const ExpensesPage = () => {
                     )}
                   </td>
                   <td className="px-4 py-3 text-ink-500 whitespace-nowrap">{fmtDate(e.created_at)}</td>
+                  {isAdmin && (
+                    <td className="px-4 py-3 text-right">
+                      <button
+                        onClick={() => handleDelete(e)}
+                        className="text-rose-500 hover:text-rose-700 p-1.5 rounded-lg hover:bg-rose-50 transition-colors"
+                        aria-label="Delete expense"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </td>
+                  )}
                 </motion.tr>
               ))}
             </tbody>

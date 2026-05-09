@@ -14,6 +14,7 @@ import {
   ShieldCheck,
   Clock,
   Download,
+  Trash2,
 } from 'lucide-react'
 
 import { donationService } from '../services/donationService'
@@ -141,6 +142,30 @@ export const DonationsPage = () => {
     } finally {
       setVerifyingId(null)
     }
+  }
+
+  const handleDelete = (don) => {
+    toast(
+      (t) => (
+        <div className="flex flex-col gap-2 min-w-[240px]">
+          <p className="font-semibold text-ink-900">Delete this donation?</p>
+          <p className="text-xs text-ink-600">{don.donor_name} — {don.donation_type}</p>
+          <p className="text-xs text-rose-600 font-medium">This cannot be undone.</p>
+          <div className="flex gap-2 mt-1">
+            <button className="btn btn-danger flex-1 py-1.5 text-xs" onClick={async () => {
+              toast.dismiss(t.id)
+              try {
+                await donationService.deleteDonation(don.id)
+                setDonations((prev) => prev.filter((d) => d.id !== don.id))
+                toast.success('Deleted')
+              } catch { toast.error('Failed to delete') }
+            }}>Delete</button>
+            <button className="btn btn-secondary flex-1 py-1.5 text-xs" onClick={() => toast.dismiss(t.id)}>Cancel</button>
+          </div>
+        </div>
+      ),
+      { duration: 8000 },
+    )
   }
 
   const filtered = useMemo(() => {
@@ -504,24 +529,33 @@ export const DonationsPage = () => {
                   </td>
                   {isAdmin && (
                     <td className="px-4 py-3 text-right whitespace-nowrap">
-                      {d.is_verified ? (
+                      <div className="flex items-center justify-end gap-2">
+                        {d.is_verified ? (
+                          <button
+                            onClick={() => handleVerify(d)}
+                            disabled={verifyingId === d.id}
+                            className="btn-ghost text-rose-600 hover:bg-rose-50"
+                          >
+                            {verifyingId === d.id ? 'Updating…' : 'Unverify'}
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => handleVerify(d)}
+                            disabled={verifyingId === d.id}
+                            className="btn btn-emerald !px-3 !py-1.5 !text-xs"
+                          >
+                            <ShieldCheck className="w-3.5 h-3.5" />
+                            {verifyingId === d.id ? 'Verifying…' : 'Verify'}
+                          </button>
+                        )}
                         <button
-                          onClick={() => handleVerify(d)}
-                          disabled={verifyingId === d.id}
-                          className="btn-ghost text-rose-600 hover:bg-rose-50"
+                          onClick={() => handleDelete(d)}
+                          className="p-1.5 rounded-lg text-rose-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
+                          title="Delete record"
                         >
-                          {verifyingId === d.id ? 'Updating…' : 'Unverify'}
+                          <Trash2 className="w-3.5 h-3.5" />
                         </button>
-                      ) : (
-                        <button
-                          onClick={() => handleVerify(d)}
-                          disabled={verifyingId === d.id}
-                          className="btn btn-emerald !px-3 !py-1.5 !text-xs"
-                        >
-                          <ShieldCheck className="w-3.5 h-3.5" />
-                          {verifyingId === d.id ? 'Verifying…' : 'Verify'}
-                        </button>
-                      )}
+                      </div>
                     </td>
                   )}
                 </motion.tr>
