@@ -63,7 +63,7 @@ export const Header = ({ onMenuOpen }) => {
             </div>
             <div className="leading-tight min-w-0">
               <p className="font-display font-semibold text-ink-900 text-sm sm:text-base tracking-tight truncate">
-                Siddha Galaxia <span className="hidden sm:inline text-saffron-600">· Phase 2</span>
+                Siddha Galaxia Phase 2 <span className="hidden sm:inline text-saffron-600">WC</span>
               </p>
               <p className="text-[10px] uppercase tracking-[0.18em] text-ink-400 font-medium hidden sm:block">
                 Welfare Committee · 2026-27
