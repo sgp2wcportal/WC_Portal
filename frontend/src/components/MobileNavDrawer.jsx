@@ -10,6 +10,8 @@ import {
   UtensilsCrossed,
   PieChart,
   CalendarRange,
+  Phone,
+  Music2,
   X,
   Sparkles,
 } from 'lucide-react'
@@ -25,6 +27,8 @@ const menuItems = [
   { path: '/expenses',      label: 'Expenses',         icon: Receipt,         roles: ['admin', 'generic']         },
   { path: '/coupons',       label: 'Food Coupons',    icon: UtensilsCrossed, roles: ['admin', 'user', 'generic'] },
   { path: '/treasury',      label: 'Treasury',         icon: PieChart,        roles: ['admin', 'generic']         },
+  { path: '/contacts',      label: 'Contacts',         icon: Phone,           roles: ['admin', 'user', 'generic'] },
+  { path: '/cultural',      label: 'Cultural Events',  icon: Music2,          roles: ['admin', 'user', 'generic'] },
 ]
 
 export const MobileNavDrawer = ({ open, onClose }) => {

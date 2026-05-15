@@ -9,13 +9,17 @@ from app.schemas.user import (
     UserSignUp,
 )
 from app.services.auth_service import (
+    AccountPendingVerification,
     EmailTaken,
     UsernameTaken,
     authenticate_user,
     create_access_token_for_user,
     register_resident,
 )
-from app.utils.registration_email import send_registration_email
+from app.utils.registration_email import (
+    send_admin_new_user_notification,
+    send_registration_email,
+)
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
 
@@ -23,7 +27,13 @@ router = APIRouter(prefix="/api/auth", tags=["auth"])
 @router.post("/login", response_model=TokenResponse)
 async def login(credentials: UserLogin, db: Session = Depends(get_db)):
     """Login endpoint — works for the seeded demo accounts AND for residents who signed up."""
-    user = authenticate_user(credentials.username, credentials.password, db)
+    try:
+        user = authenticate_user(credentials.username, credentials.password, db)
+    except AccountPendingVerification:
+        raise HTTPException(
+            status_code=403,
+            detail="Your account is pending admin approval. You will receive an email once it is verified.",
+        )
     if not user:
         raise HTTPException(status_code=401, detail="Invalid username or password")
     access_token = create_access_token_for_user(user)
@@ -57,11 +67,14 @@ async def register(payload: UserSignUp, db: Session = Depends(get_db)):
     except EmailTaken:
         raise HTTPException(status_code=409, detail=f"An account with email '{payload.email}' already exists")
 
-    # Best-effort: send the welcome email with their credentials. Failure here
-    # shouldn't block the registration itself.
+    # Best-effort emails — failures are logged but don't block registration.
     try:
         send_registration_email(user=user, password=payload.password)
-    except Exception:  # pragma: no cover — logged by the mailer
+    except Exception:
+        pass
+    try:
+        send_admin_new_user_notification(user=user)
+    except Exception:
         pass
 
     return user

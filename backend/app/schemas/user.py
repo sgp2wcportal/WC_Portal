@@ -76,6 +76,7 @@ class FullUserResponse(BaseModel):
     is_rented: bool = False
     owner_name: str | None = None
     owner_contact_number: str | None = None
+    is_verified: bool = False
     created_at: datetime
 
     class Config:

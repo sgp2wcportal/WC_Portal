@@ -20,6 +20,7 @@ from app.schemas.coupon import (
 from app.services.coupon_service import (
     DuplicateOccasion,
     OccasionInUse,
+    PaymentNotVerified,
     SubscriptionNotVerified,
     TicketAlreadyUsed,
     add_coupon_occasion,
@@ -272,6 +273,11 @@ async def verify_ticket_endpoint(
     _require_admin_or_generic(current_user)
     try:
         ticket = verify_ticket(db, request.code, used_by=current_user["sub"])
+    except PaymentNotVerified:
+        raise HTTPException(
+            status_code=402,
+            detail="Payment for this booking has not been verified by admin yet. Please verify the payment before scanning.",
+        )
     except TicketAlreadyUsed as exc:
         t = exc.ticket
         when = t.used_at.isoformat() if t.used_at else "earlier"

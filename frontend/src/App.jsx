@@ -22,6 +22,8 @@ import { ExpensesPage } from './pages/ExpensesPage'
 import { CouponsPage } from './pages/CouponsPage'
 import { EventsPage } from './pages/EventsPage'
 import { TreasuryPage } from './pages/TreasuryPage'
+import { ContactsPage } from './pages/ContactsPage'
+import { CulturalEventsPage } from './pages/CulturalEventsPage'
 
 const PageTransition = ({ children }) => (
   <motion.div
@@ -76,6 +78,14 @@ const AnimatedRoutes = () => {
         <Route
           path="/treasury"
           element={<RoleRoute requiredRoles={['admin', 'generic']}><PageTransition><TreasuryPage /></PageTransition></RoleRoute>}
+        />
+        <Route
+          path="/contacts"
+          element={<PrivateRoute><PageTransition><ContactsPage /></PageTransition></PrivateRoute>}
+        />
+        <Route
+          path="/cultural"
+          element={<PrivateRoute><PageTransition><CulturalEventsPage /></PageTransition></PrivateRoute>}
         />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>

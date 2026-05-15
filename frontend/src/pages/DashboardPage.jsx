@@ -13,6 +13,13 @@ import {
   CalendarRange,
   AlertTriangle,
   Trash2,
+  Database,
+  Download,
+  UserCheck,
+  Clock,
+  CheckCircle2,
+  Phone,
+  Music2,
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 
@@ -84,6 +91,24 @@ const tiles = [
     glow: '',
     roles: ['admin', 'generic'],
   },
+  {
+    path: '/contacts',
+    title: 'Contacts',
+    description: 'Committee, maintenance & emergency contacts',
+    icon: Phone,
+    accent: 'from-sky-400 to-blue-600',
+    glow: '',
+    roles: ['admin', 'user', 'generic'],
+  },
+  {
+    path: '/cultural',
+    title: 'Cultural Events',
+    description: 'Register for the cultural programme',
+    icon: Music2,
+    accent: 'from-violet-400 to-purple-600',
+    glow: '',
+    roles: ['admin', 'user', 'generic'],
+  },
 ]
 
 const greeting = () => {
@@ -127,6 +152,43 @@ export const DashboardPage = () => {
   const [showResetModal, setShowResetModal] = useState(false)
   const [resetConfirm, setResetConfirm] = useState('')
   const [resetting, setResetting] = useState(false)
+  const [backingUp, setBackingUp] = useState(false)
+  const [pendingUsers, setPendingUsers] = useState([])
+  const [verifyingId, setVerifyingId] = useState(null)
+
+  const loadPendingUsers = async () => {
+    if (role !== 'admin') return
+    try {
+      const res = await api.get('/admin/pending-users')
+      setPendingUsers(res.data)
+    } catch {
+      // silently ignore — non-critical
+    }
+  }
+
+  const handleVerifyUser = async (userId) => {
+    setVerifyingId(userId)
+    try {
+      await api.post(`/admin/verify-user/${userId}`)
+      toast.success('Account verified — approval email sent to resident.')
+      setPendingUsers((prev) => prev.filter((u) => u.id !== userId))
+    } catch {
+      toast.error('Verification failed. Please try again.')
+    } finally {
+      setVerifyingId(null)
+    }
+  }
+
+  const handleBackupDownload = () => {
+    setBackingUp(true)
+    const token = localStorage.getItem('token')
+    const a = document.createElement('a')
+    a.href = `/api/admin/backup/download?token=${encodeURIComponent(token)}`
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    setTimeout(() => setBackingUp(false), 2500)
+  }
 
   const handleMasterReset = async () => {
     setResetting(true)
@@ -156,6 +218,10 @@ export const DashboardPage = () => {
       .catch(() => { /* keep cached / fall back to username */ })
     return () => { cancelled = true }
   }, [])
+
+  useEffect(() => {
+    loadPendingUsers()
+  }, [role])
 
   const greetingTarget = displayName || username || 'friend'
   const filteredTiles = tiles.filter((tile) => tile.roles.includes(role))
@@ -218,8 +284,93 @@ export const DashboardPage = () => {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
+          transition={{ delay: 0.3 }}
+          className="mt-10 border border-indigo-200 rounded-2xl p-6 bg-indigo-50/50"
+        >
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-3">
+              <UserCheck className="w-5 h-5 text-indigo-600 shrink-0" />
+              <h2 className="font-display text-lg font-semibold text-indigo-800">Pending Verifications</h2>
+            </div>
+            {pendingUsers.length > 0 && (
+              <span className="bg-indigo-600 text-white text-xs font-bold px-2.5 py-0.5 rounded-full">
+                {pendingUsers.length}
+              </span>
+            )}
+          </div>
+          <p className="text-sm text-indigo-700 mb-4">
+            New residents who have signed up and are waiting for account approval.
+          </p>
+          {pendingUsers.length === 0 ? (
+            <div className="flex items-center gap-2 text-sm text-indigo-500">
+              <CheckCircle2 className="w-4 h-4" /> All accounts verified — no pending requests.
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {pendingUsers.map((u) => (
+                <div key={u.id} className="bg-white border border-indigo-100 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center gap-3">
+                  <div className="flex-1 min-w-0">
+                    <p className="font-semibold text-ink-900 text-sm">{u.name || u.username}</p>
+                    <p className="text-xs text-ink-500 mt-0.5">
+                      Flat: <span className="font-medium text-ink-700">{u.tower}-{u.unit_number}</span>
+                      {' · '}Contact: <span className="font-medium text-ink-700">{u.contact_number || '—'}</span>
+                      {' · '}Username: <span className="font-mono text-ink-600">{u.username}</span>
+                    </p>
+                    {u.email && <p className="text-xs text-ink-400 mt-0.5">{u.email}</p>}
+                    {u.is_rented && (
+                      <p className="text-xs text-amber-600 mt-0.5">Rented · Owner: {u.owner_name || '—'} ({u.owner_contact_number || '—'})</p>
+                    )}
+                    <p className="text-[10px] text-ink-400 mt-1 flex items-center gap-1">
+                      <Clock className="w-3 h-3" />
+                      {u.created_at ? new Date(u.created_at).toLocaleString() : '—'}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => handleVerifyUser(u.id)}
+                    disabled={verifyingId === u.id}
+                    className="btn bg-indigo-600 hover:bg-indigo-700 text-white border-indigo-700 gap-2 shrink-0 disabled:opacity-60"
+                  >
+                    <CheckCircle2 className="w-4 h-4" />
+                    {verifyingId === u.id ? 'Verifying…' : 'Verify'}
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </motion.div>
+      )}
+
+      {role === 'admin' && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.35 }}
+          className="mt-6 border border-teal-200 rounded-2xl p-6 bg-teal-50/50"
+        >
+          <div className="flex items-center gap-3 mb-2">
+            <Database className="w-5 h-5 text-teal-600 shrink-0" />
+            <h2 className="font-display text-lg font-semibold text-teal-800">Database Backup</h2>
+          </div>
+          <p className="text-sm text-teal-700 mb-4">
+            Download a complete snapshot of the database. Save this file locally — it can be used to fully restore all society data if the live database is ever corrupted or lost.
+          </p>
+          <button
+            onClick={handleBackupDownload}
+            disabled={backingUp}
+            className="btn bg-teal-600 hover:bg-teal-700 text-white border-teal-700 gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+          >
+            <Download className="w-4 h-4" />
+            {backingUp ? 'Preparing backup…' : 'Download Backup'}
+          </button>
+        </motion.div>
+      )}
+
+      {role === 'admin' && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           transition={{ delay: 0.4 }}
-          className="mt-12 border border-rose-200 rounded-2xl p-6 bg-rose-50/50"
+          className="mt-6 border border-rose-200 rounded-2xl p-6 bg-rose-50/50"
         >
           <div className="flex items-center gap-3 mb-2">
             <AlertTriangle className="w-5 h-5 text-rose-600 shrink-0" />

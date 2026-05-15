@@ -49,6 +49,10 @@ class EmailTaken(Exception):
     pass
 
 
+class AccountPendingVerification(Exception):
+    """Raised at login when the account exists but hasn't been verified by admin yet."""
+
+
 def register_resident(
     db: Session,
     *,
@@ -83,6 +87,7 @@ def register_resident(
         is_rented=bool(is_rented),
         owner_name=(owner_name or "").strip() or None if is_rented else None,
         owner_contact_number=(owner_contact_number or "").strip() or None if is_rented else None,
+        is_verified=False,
     )
     db.add(user)
     db.commit()
@@ -102,12 +107,15 @@ HARDCODED_USERS = {
 
 
 def authenticate_user(username: str, password: str, db: Session) -> User | None:
-    """Look up user in DB and verify password (bcrypt or legacy plaintext)."""
+    """Look up user in DB and verify password (bcrypt or legacy plaintext).
+    Raises AccountPendingVerification if the account hasn't been approved by admin yet."""
     db_user = db.query(User).filter(User.username == username).first()
     if not db_user:
         return None
     if not verify_password(password, db_user.password):
         return None
+    if not getattr(db_user, "is_verified", True):
+        raise AccountPendingVerification(db_user.username)
     # Upgrade stored password to a bcrypt hash if it was still plaintext
     if not (db_user.password or "").startswith("$2"):
         db_user.password = hash_password(password)
@@ -189,17 +197,20 @@ def change_user_password(db: Session, user: User, *, current_password: str, new_
 
 def seed_demo_accounts(db: Session) -> None:
     """Ensure admin/user/generic exist with their default passwords (hashed)."""
-    for username, cred in HARDCODED_USERS.items():
-        existing = db.query(User).filter(User.username == username).first()
+    for uname, cred in HARDCODED_USERS.items():
+        existing = db.query(User).filter(User.username == uname).first()
         if existing:
-            # If still plaintext, upgrade to a hash so future logins go through bcrypt
             if existing.password and not existing.password.startswith("$2"):
                 existing.password = hash_password(existing.password)
+            # Ensure demo accounts are always verified
+            if not getattr(existing, "is_verified", True):
+                existing.is_verified = True
             continue
         db.add(User(
             id=str(uuid.uuid4()),
-            username=username,
+            username=uname,
             password=hash_password(cred["password"]),
             role=cred["role"],
+            is_verified=True,
         ))
     db.commit()

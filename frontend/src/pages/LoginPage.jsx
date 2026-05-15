@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import toast from 'react-hot-toast'
 import {
   Sparkles,
@@ -16,6 +16,24 @@ import {
 import { authService } from '../services/authService'
 import { useAuthStore } from '../store/authStore'
 
+const WELCOME_WORDS = [
+  { word: 'স্বাগতম',    lang: 'Bengali'    },
+  { word: 'नमस्कार',     lang: 'Hindi'      },
+  { word: 'வணக்கம்',    lang: 'Tamil'      },
+  { word: 'స్వాగతం',    lang: 'Telugu'     },
+  { word: 'ಸ್ವಾಗತ',     lang: 'Kannada'    },
+  { word: 'स्वागत',      lang: 'Marathi'    },
+  { word: 'સ્વાગત',      lang: 'Gujarati'   },
+  { word: 'ਜੀ ਆਇਆਂ ਨੂੰ', lang: 'Punjabi'    },
+  { word: 'സ്വാഗതം',    lang: 'Malayalam'  },
+  { word: 'Welcome',    lang: 'English'    },
+  { word: 'Bienvenue',  lang: 'French'     },
+  { word: 'Bienvenido', lang: 'Spanish'    },
+  { word: 'ようこそ',     lang: 'Japanese'   },
+  { word: 'مرحباً',     lang: 'Arabic'     },
+  { word: 'Karibu',     lang: 'Swahili'    },
+]
+
 const highlights = [
   { icon: Megaphone,       text: 'Live announcements ticker' },
   { icon: UtensilsCrossed, text: 'Festive food coupons & QR check-in' },
@@ -28,8 +46,16 @@ export const LoginPage = () => {
   const [password, setPassword] = useState('')
   const [showPwd, setShowPwd] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [welcomeIdx, setWelcomeIdx] = useState(0)
   const navigate = useNavigate()
   const setAuth = useAuthStore((state) => state.setAuth)
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setWelcomeIdx((i) => (i + 1) % WELCOME_WORDS.length)
+    }, 2000)
+    return () => clearInterval(id)
+  }, [])
 
   const handleLogin = async (e) => {
     e.preventDefault()
@@ -133,8 +159,20 @@ export const LoginPage = () => {
                   Sign in
                 </p>
                 <h2 className="font-display text-3xl font-semibold text-ink-900 tracking-tight">
-                  Bienvenue
+                  <AnimatePresence mode="wait">
+                    <motion.span
+                      key={welcomeIdx}
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -8 }}
+                      transition={{ duration: 0.35 }}
+                      className="inline-block"
+                    >
+                      {WELCOME_WORDS[welcomeIdx].word}
+                    </motion.span>
+                  </AnimatePresence>
                 </h2>
+                <p className="text-ink-400 text-xs mt-0.5">{WELCOME_WORDS[welcomeIdx].lang}</p>
                 <p className="text-ink-600 mt-2 text-sm">
                   Welcome back to your community portal.
                 </p>
@@ -198,7 +236,7 @@ export const LoginPage = () => {
                 </form>
 
                 <p className="text-center text-sm text-ink-600 mt-5">
-                  New resident?{' '}
+                  New to the portal?{' '}
                   <Link to="/signup" className="text-saffron-700 font-semibold hover:text-saffron-800">
                     Create your account
                   </Link>

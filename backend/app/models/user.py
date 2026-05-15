@@ -28,5 +28,9 @@ class User(Base):
     owner_name = Column(String, nullable=True)
     owner_contact_number = Column(String, nullable=True)
 
+    # Admin must verify new resident accounts before they can log in.
+    # Demo accounts (admin/user/generic) are pre-verified on seed.
+    is_verified = Column(Boolean, default=False, nullable=False)
+
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())

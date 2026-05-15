@@ -378,6 +378,10 @@ class TicketAlreadyUsed(Exception):
         super().__init__("Ticket already used")
 
 
+class PaymentNotVerified(Exception):
+    """Booking payment has not been verified by admin yet — ticket cannot be scanned."""
+
+
 def verify_ticket(db: Session, code: str, used_by: str) -> CouponTicket | None:
     ticket_id = code.split("TICKET:", 1)[-1].strip()
     ticket = get_ticket_by_id(db, ticket_id)
@@ -385,6 +389,10 @@ def verify_ticket(db: Session, code: str, used_by: str) -> CouponTicket | None:
         return None
     if ticket.is_used:
         raise TicketAlreadyUsed(ticket)
+    # Gate: payment must be admin-verified before the QR can be scanned
+    booking = db.query(Coupon).filter(Coupon.id == ticket.booking_id).first()
+    if booking and not getattr(booking, "payment_verified", False):
+        raise PaymentNotVerified()
     ticket.is_used = True
     ticket.used_at = datetime.now(timezone.utc)
     ticket.used_by = used_by

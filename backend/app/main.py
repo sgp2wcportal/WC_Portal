@@ -9,7 +9,7 @@ from sqlalchemy import inspect, text
 
 from app.config import settings
 from app.database import Base, engine
-from app.routes import admin, announcements, auth, coupons, donations, events, expenses, payments, reports, subscriptions, users
+from app.routes import admin, announcements, auth, contacts, coupons, cultural, donations, events, expenses, payments, reports, subscriptions, users
 
 # Create tables
 Base.metadata.create_all(bind=engine)
@@ -91,6 +91,7 @@ _ensure_columns("users", [
     ("is_rented", "BOOLEAN DEFAULT 0"),
     ("owner_name", "VARCHAR"),
     ("owner_contact_number", "VARCHAR"),
+    ("is_verified", "BOOLEAN DEFAULT 0"),
 ])
 
 
@@ -149,6 +150,8 @@ app.include_router(coupons.router)
 app.include_router(events.router)
 app.include_router(payments.router)
 app.include_router(reports.router)
+app.include_router(contacts.router)
+app.include_router(cultural.router)
 
 # Serve uploaded files (QR codes, menu images, receipts) from /storage/<...>
 storage_root = os.path.abspath(settings.UPLOAD_FOLDER)
