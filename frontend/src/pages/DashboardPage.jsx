@@ -15,11 +15,15 @@ import {
   Trash2,
   Database,
   Download,
+  Upload,
   UserCheck,
   Clock,
   CheckCircle2,
   Phone,
   Music2,
+  ShieldCheck,
+  History,
+  RefreshCw,
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 
@@ -153,6 +157,12 @@ export const DashboardPage = () => {
   const [resetConfirm, setResetConfirm] = useState('')
   const [resetting, setResetting] = useState(false)
   const [backingUp, setBackingUp] = useState(false)
+  const [dailyBackups, setDailyBackups] = useState([])
+  const [loadingDaily, setLoadingDaily] = useState(false)
+  const [triggeringBackup, setTriggeringBackup] = useState(false)
+  const [restoreFile, setRestoreFile] = useState(null)
+  const [restoring, setRestoring] = useState(false)
+  const [showRestoreConfirm, setShowRestoreConfirm] = useState(false)
   const [pendingUsers, setPendingUsers] = useState([])
   const [verifyingId, setVerifyingId] = useState(null)
 
@@ -190,6 +200,60 @@ export const DashboardPage = () => {
     setTimeout(() => setBackingUp(false), 2500)
   }
 
+  const loadDailyBackups = async () => {
+    setLoadingDaily(true)
+    try {
+      const res = await api.get('/admin/backup/daily-status')
+      setDailyBackups(res.data.backups || [])
+    } catch {
+      toast.error('Failed to load daily backup status.')
+    } finally {
+      setLoadingDaily(false)
+    }
+  }
+
+  const handleTriggerBackup = async () => {
+    setTriggeringBackup(true)
+    try {
+      await api.post('/admin/backup/run-now')
+      toast.success('Backup triggered successfully.')
+      loadDailyBackups()
+    } catch {
+      toast.error('Backup failed — check server logs.')
+    } finally {
+      setTriggeringBackup(false)
+    }
+  }
+
+  const handleDownloadDaily = (filename) => {
+    const token = localStorage.getItem('token')
+    const a = document.createElement('a')
+    a.href = `/api/admin/backup/daily/${encodeURIComponent(filename)}?token=${encodeURIComponent(token)}`
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+  }
+
+  const handleRestoreSubmit = async () => {
+    if (!restoreFile) return
+    setRestoring(true)
+    setShowRestoreConfirm(false)
+    const formData = new FormData()
+    formData.append('file', restoreFile)
+    try {
+      await api.post('/admin/backup/restore', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      })
+      toast.success('Database restored successfully. Page will reload in 3 seconds.')
+      setTimeout(() => window.location.reload(), 3000)
+    } catch (err) {
+      toast.error(err.response?.data?.detail || 'Restore failed. Please check the file and try again.')
+    } finally {
+      setRestoring(false)
+      setRestoreFile(null)
+    }
+  }
+
   const handleMasterReset = async () => {
     setResetting(true)
     try {
@@ -220,7 +284,10 @@ export const DashboardPage = () => {
   }, [])
 
   useEffect(() => {
-    loadPendingUsers()
+    if (role === 'admin') {
+      loadPendingUsers()
+      loadDailyBackups()
+    }
   }, [role])
 
   const greetingTarget = displayName || username || 'friend'
@@ -345,25 +412,184 @@ export const DashboardPage = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.35 }}
-          className="mt-6 border border-teal-200 rounded-2xl p-6 bg-teal-50/50"
+          className="mt-6 border border-teal-200 rounded-2xl p-6 bg-teal-50/50 space-y-5"
         >
-          <div className="flex items-center gap-3 mb-2">
+          {/* Header */}
+          <div className="flex items-center gap-3">
             <Database className="w-5 h-5 text-teal-600 shrink-0" />
             <h2 className="font-display text-lg font-semibold text-teal-800">Database Backup</h2>
+            <span className="ml-auto text-xs bg-teal-100 text-teal-700 px-2 py-0.5 rounded-full flex items-center gap-1">
+              <ShieldCheck className="w-3 h-3" /> AES Encrypted
+            </span>
           </div>
-          <p className="text-sm text-teal-700 mb-4">
-            Download a complete snapshot of the database. Save this file locally — it can be used to fully restore all society data if the live database is ever corrupted or lost.
-          </p>
-          <button
-            onClick={handleBackupDownload}
-            disabled={backingUp}
-            className="btn bg-teal-600 hover:bg-teal-700 text-white border-teal-700 gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
-          >
-            <Download className="w-4 h-4" />
-            {backingUp ? 'Preparing backup…' : 'Download Backup'}
-          </button>
+
+          {/* Manual download */}
+          <div>
+            <p className="text-sm text-teal-700 mb-3">
+              Download an encrypted snapshot of the database right now. The <code className="bg-teal-100 px-1 rounded text-xs">.db.enc</code> file is AES-encrypted and can only be restored on this portal.
+            </p>
+            <button
+              onClick={handleBackupDownload}
+              disabled={backingUp}
+              className="btn bg-teal-600 hover:bg-teal-700 text-white border-teal-700 gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              <Download className="w-4 h-4" />
+              {backingUp ? 'Preparing…' : 'Download Encrypted Backup'}
+            </button>
+          </div>
+
+          {/* Automated daily backups */}
+          <div className="border-t border-teal-200 pt-4">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <History className="w-4 h-4 text-teal-600" />
+                <p className="text-sm font-semibold text-teal-800">Automated Daily Backups</p>
+                <span className="text-xs text-teal-500">(runs at 02:00 IST · last 7 days kept)</span>
+              </div>
+              <button
+                onClick={handleTriggerBackup}
+                disabled={triggeringBackup}
+                title="Run backup now"
+                className="btn btn-secondary gap-1.5 text-xs py-1.5 disabled:opacity-60"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 ${triggeringBackup ? 'animate-spin' : ''}`} />
+                {triggeringBackup ? 'Running…' : 'Run now'}
+              </button>
+            </div>
+
+            {loadingDaily ? (
+              <p className="text-xs text-teal-500">Loading…</p>
+            ) : dailyBackups.length === 0 ? (
+              <p className="text-xs text-teal-500">No automated backups yet — the first one runs tonight at 02:00 IST.</p>
+            ) : (
+              <div className="space-y-1.5">
+                {dailyBackups.map((b) => (
+                  <div key={b.filename} className="flex items-center justify-between bg-white border border-teal-100 rounded-lg px-3 py-2">
+                    <div>
+                      <p className="text-xs font-mono text-ink-700">{b.filename}</p>
+                      <p className="text-[10px] text-ink-400 mt-0.5">
+                        {new Date(b.created_at).toLocaleString()} · {b.size_kb} KB
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => handleDownloadDaily(b.filename)}
+                      className="text-teal-600 hover:text-teal-800 p-1.5 rounded-lg hover:bg-teal-50"
+                      title="Download this backup"
+                    >
+                      <Download className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </motion.div>
       )}
+
+      {/* ── DB Restore ── */}
+      {role === 'admin' && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.38 }}
+          className="mt-6 border border-amber-200 rounded-2xl p-6 bg-amber-50/50"
+        >
+          <div className="flex items-center gap-3 mb-2">
+            <Upload className="w-5 h-5 text-amber-600 shrink-0" />
+            <h2 className="font-display text-lg font-semibold text-amber-800">Database Recovery</h2>
+          </div>
+          <p className="text-sm text-amber-700 mb-4">
+            Upload a previously downloaded <code className="bg-amber-100 px-1 rounded text-xs">.db.enc</code> backup file to restore the database to that point in time.
+            All current data will be replaced. This action cannot be undone.
+          </p>
+
+          <div className="flex flex-col sm:flex-row gap-3 items-start">
+            <label className="flex-1">
+              <div className={`border-2 border-dashed rounded-xl p-4 text-center cursor-pointer transition-colors ${restoreFile ? 'border-amber-400 bg-amber-50' : 'border-amber-200 hover:border-amber-400'}`}>
+                <input
+                  type="file"
+                  accept=".enc,.db.enc"
+                  className="hidden"
+                  onChange={(e) => setRestoreFile(e.target.files?.[0] || null)}
+                />
+                {restoreFile ? (
+                  <div>
+                    <p className="text-sm font-semibold text-amber-800">{restoreFile.name}</p>
+                    <p className="text-xs text-amber-600 mt-0.5">{(restoreFile.size / 1024).toFixed(1)} KB selected</p>
+                  </div>
+                ) : (
+                  <div>
+                    <Upload className="w-6 h-6 text-amber-400 mx-auto mb-1" />
+                    <p className="text-sm text-amber-600">Click to select .db.enc backup file</p>
+                  </div>
+                )}
+              </div>
+            </label>
+            <button
+              onClick={() => restoreFile && setShowRestoreConfirm(true)}
+              disabled={!restoreFile || restoring}
+              className="btn bg-amber-600 hover:bg-amber-700 text-white border-amber-700 gap-2 shrink-0 disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              <Upload className="w-4 h-4" />
+              {restoring ? 'Restoring…' : 'Restore Database'}
+            </button>
+          </div>
+        </motion.div>
+      )}
+
+      {/* Restore confirmation modal */}
+      <AnimatePresence>
+        {showRestoreConfirm && (
+          <motion.div
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 modal-scrim"
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            onClick={() => setShowRestoreConfirm(false)}
+          >
+            <motion.div
+              onClick={(e) => e.stopPropagation()}
+              initial={{ opacity: 0, scale: 0.95, y: 12 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.97, y: 8 }}
+              transition={{ duration: 0.22, ease: [0.2, 0.7, 0.2, 1] }}
+              className="bg-white rounded-2xl shadow-[0_30px_80px_-25px_rgba(28,25,23,0.4)] border border-amber-200 max-w-md w-full p-6 space-y-4"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-11 h-11 rounded-xl bg-amber-100 flex items-center justify-center shrink-0">
+                  <AlertTriangle className="w-6 h-6 text-amber-600" />
+                </div>
+                <div>
+                  <h3 className="font-display text-xl font-semibold text-amber-900">Confirm Restore</h3>
+                  <p className="text-sm text-amber-600">This will overwrite all current data.</p>
+                </div>
+              </div>
+              <p className="text-sm text-ink-700">
+                You are about to restore the database from:
+              </p>
+              <div className="bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 font-mono text-sm text-amber-800">
+                {restoreFile?.name}
+              </div>
+              <p className="text-sm text-rose-700 font-medium">
+                ⚠ All data added after this backup was taken will be permanently lost.
+              </p>
+              <div className="flex gap-3 pt-1">
+                <button
+                  onClick={handleRestoreSubmit}
+                  className="btn bg-amber-600 hover:bg-amber-700 text-white border-amber-700 flex-1"
+                >
+                  Yes, restore now
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowRestoreConfirm(false)}
+                  className="btn btn-secondary"
+                >
+                  Cancel
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {role === 'admin' && (
         <motion.div

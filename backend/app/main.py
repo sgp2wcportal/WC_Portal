@@ -10,6 +10,7 @@ from sqlalchemy import inspect, text
 from app.config import settings
 from app.database import Base, engine
 from app.routes import admin, announcements, auth, contacts, coupons, cultural, donations, events, expenses, payments, reports, subscriptions, users
+from app.utils.backup_scheduler import start_scheduler, stop_scheduler
 
 # Create tables
 Base.metadata.create_all(bind=engine)
@@ -128,6 +129,16 @@ app = FastAPI(
     description="Residential Society Management System",
     version="1.0.0"
 )
+
+
+@app.on_event("startup")
+async def _on_startup():
+    start_scheduler()
+
+
+@app.on_event("shutdown")
+async def _on_shutdown():
+    stop_scheduler()
 
 # CORS middleware
 app.add_middleware(
